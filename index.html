@@ -364,8 +364,16 @@
             Object.values(activeNotes).forEach(n => n.stop());
             
             // Toca a nota com volume total
-            activeNotes[noteId] = instrument.play(noteId, ac.currentTime, { gain: 1 });
-            
+function transposeUp(note) {
+    const match = note.match(/^([A-G]#?)(\d)$/);
+    if (!match) return note;
+    const pitch = match[1];
+    const octave = parseInt(match[2]);
+    return pitch + (octave + 1);
+}
+
+const transposedNote = transposeUp(noteId);
+activeNotes[noteId] = instrument.play(transposedNote, ac.currentTime, { gain: 1 });            
             // Atualiza UI
             const diagramEl = document.querySelector(`[data-note="${noteId}"]`);
             if (diagramEl) diagramEl.classList.add('active');
