@@ -1,29 +1,28 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Flauta Doce - Profa. Isamara Carvalho</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    
     <script src="https://unpkg.com/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 
     <style>
-        /* Reset e Configurações Globais */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none; /* Previne seleção de texto ao interagir */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Otimizado para funcionar dentro do Iframe (Incorporar) do Moodle */
         html, body {
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
 
         body {
@@ -32,21 +31,15 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* Fundo com gradiente radial vibrante imitando a iluminação de palco/neon da imagem */
             background: radial-gradient(circle at 50% 30%, #4a0082 0%, #1a0033 50%, #05000a 100%);
-            overflow: hidden;
             color: white;
             position: relative;
         }
 
-        /* Efeitos de luz no fundo (estrelas/partículas) */
         .background-glow {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
+            inset: 0;
+            background-image:
                 radial-gradient(2px 2px at 20px 30px, #ff00ff, rgba(0,0,0,0)),
                 radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
                 radial-gradient(3px 3px at 90px 40px, #ffcc00, rgba(0,0,0,0)),
@@ -58,21 +51,19 @@
             pointer-events: none;
         }
 
-        /* Container Principal */
         .main-container {
             z-index: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 90%;
-            max-width: 1100px; /* Levemente maior para acomodar os diagramas */
-            padding: 5px; /* Padding reduzido para modo banner */
+            width: 100%;
+            max-width: 1100px;
+            padding: 5px;
         }
 
-        /* Cabeçalho / Títulos */
         .header {
             text-align: center;
-            margin-bottom: 5px; /* Margem muito reduzida */
+            margin-bottom: 5px;
             animation: float 4s ease-in-out infinite;
         }
 
@@ -84,11 +75,10 @@
 
         .title {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(1.8rem, 5vw, 3rem); /* Fonte menor para modo banner */
+            font-size: clamp(1.8rem, 5vw, 3rem);
             line-height: 1;
-            white-space: nowrap; /* Força o texto a ficar em uma única linha */
+            white-space: nowrap;
             text-transform: uppercase;
-            /* Recriando o efeito 3D Amarelo com borda Roxa */
             background: linear-gradient(to bottom, #fff8b0 0%, #ffd000 40%, #ff8800 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -97,14 +87,13 @@
             margin-bottom: 2px;
         }
 
-        /* Área do Professor (Flutuante sobre os diagramas) */
         .subtitle-wrapper {
             position: absolute;
-            top: 80%; /* Centraliza verticalmente na área do widget */
+            top: 60%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 20; /* Garante que fique acima de TUDO */
-            pointer-events: none; /* CRUCIAL: Permite que o usuário clique nos diagramas através do texto */
+            z-index: 20;
+            pointer-events: none;
             display: inline-block;
             background: linear-gradient(to right, #6200ea, #aa00ff, #6200ea);
             padding: 3px 15px;
@@ -122,7 +111,6 @@
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
-        /* Área Interativa da Flauta */
         .recorder-wrapper {
             width: 100%;
             background: #111;
@@ -139,13 +127,15 @@
             justify-content: space-between;
             align-items: flex-start;
             width: 100%;
-            height: clamp(100px, 30vh, 160px); /* Altura otimizada para banner */
-            overflow-x: auto; /* Permite scroll horizontal se necessário em telas pequenas */
-            padding-bottom: 5px;
-            padding-left: 15px; /* adiciona folga à esquerda */
+            height: clamp(100px, 30vh, 160px);
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0 6px 5px 20px;
+            gap: 2px;
+            touch-action: manipulation;
+            scrollbar-width: thin;
         }
 
-        /* Estilo de cada Nota/Diagrama */
         .note-diagram {
             display: flex;
             flex-direction: column;
@@ -156,6 +146,7 @@
             flex-shrink: 0;
             position: relative;
             z-index: 1;
+            min-width: 44px;
         }
 
         .note-diagram:hover {
@@ -163,10 +154,9 @@
         }
 
         .note-diagram.active {
-            transform: translateY(2px); /* Efeito de clique */
+            transform: translateY(2px);
         }
 
-        /* Rótulo da Nota (Dó4, Ré4...) */
         .note-label {
             font-family: 'Anton', sans-serif;
             font-size: 1rem;
@@ -174,67 +164,99 @@
             text-transform: uppercase;
             margin-bottom: 5px;
             text-shadow: 0 0 5px rgba(255,204,0,0.7);
+            white-space: nowrap;
         }
 
-        /* Representação Visual da Flauta */
         .recorder-visual {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 2px;
             position: relative;
+            padding-left: 8px;
         }
 
-        /* Orifício Comum (Aberto) */
         .hole {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             border: 2px solid #aaa;
             background: transparent;
-            transition: background 0.1s, border-color 0.1s;
+            transition: background 0.1s, border-color 0.1s, box-shadow 0.1s;
         }
 
-        /* Orifício Fechado */
         .hole.closed {
-            background: #fff; /* Mostra fechado em branco para contraste no escuro */
+            background: #fff;
             border-color: #fff;
         }
 
-        /* Orifício do Polegar (Atrás) - Posicionado à esquerda */
         .hole.thumb {
             position: absolute;
-            left: -15px;
+            left: -7px;
             top: 2px;
-            border-color: #ff00ff; /* Cor especial para destacar o polegar */
+            border-color: #ff00ff;
         }
+
         .hole.thumb.closed {
             background: #ff00ff;
             border-color: #ff00ff;
         }
 
-        /* Polegar meio-fechado (técnica de registro) */
         .hole.thumb.half {
             background: linear-gradient(to right, #ff00ff 50%, transparent 50%);
             border-color: #ff00ff;
         }
 
-        /* Feedback visual na nota ativa */
         .note-diagram.active .hole.closed {
-            background: #00ffff; /* Ciano vibrante para nota ativa */
+            background: #00ffff;
             border-color: #00ffff;
             box-shadow: 0 0 10px rgba(0,255,255,0.8);
         }
-        .note-diagram.active .hole.thumb.closed {
-            background: #ff00ff;
+
+        .note-diagram.active .hole.thumb.closed,
+        .note-diagram.active .hole.thumb.half {
             border-color: #ff00ff;
             box-shadow: 0 0 10px rgba(255,0,255,0.8);
         }
+
+        .note-diagram.active .hole.thumb.closed {
+            background: #ff00ff;
+        }
+
+        .note-diagram.active .hole.thumb.half {
+            background: linear-gradient(to right, #ff00ff 50%, transparent 50%);
+        }
+
         .note-diagram.active .note-label {
             color: #fff;
             text-shadow: 0 0 10px rgba(0,255,255,0.8);
         }
 
+        .audio-status {
+            position: absolute;
+            right: 10px;
+            bottom: 8px;
+            font-size: 0.72rem;
+            opacity: 0.75;
+            z-index: 30;
+        }
+
+        @media (max-width: 700px) {
+            .diagram-container {
+                justify-content: flex-start;
+                gap: 6px;
+                padding-left: 24px;
+            }
+
+            .subtitle-wrapper {
+                top: 64%;
+                padding: 3px 10px;
+            }
+
+            .note-label {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -242,7 +264,6 @@
     <div class="background-glow"></div>
 
     <div class="main-container">
-        
         <div class="header">
             <h1 class="title">FLAUTA DOCE</h1>
         </div>
@@ -251,68 +272,53 @@
             <div class="subtitle-wrapper">
                 <span class="subtitle">- Profa. Isamara Carvalho -</span>
             </div>
-            
-            <div class="diagram-container" id="recorder-diagrams">
-                </div>
-        </div>
 
+            <div class="diagram-container" id="recorder-diagrams"></div>
+            <div class="audio-status" id="audio-status">toque para ouvir</div>
+        </div>
     </div>
 
     <script>
-        // --- CONFIGURAÇÃO DA DIGITAÇÃO (Soprano Barroca - 2 Oitavas) ---
-        // Legenda:
-        // T: Polegar (Thumb) - 1:fechado, 0:aberto, 0.5:meio-fechado
-        // F: Frente (Front)  - String de 7 caracteres ('1':fechado, '0':aberto)
-        // Notas principais para fins pedagógicos (C4 a C6)
-        
         const fingeringData = [
-            // OITAVA 1 (C4 a B4)
             { id: 'C4', label: 'Dó 4', note: 'C4', T: 1, F: '1111111' },
             { id: 'D4', label: 'Ré 4', note: 'D4', T: 1, F: '1111110' },
             { id: 'E4', label: 'Mi 4', note: 'E4', T: 1, F: '1111100' },
-            { id: 'F4', label: 'Fá 4', note: 'F4', T: 1, F: '1111011' }, // Barroca
+            { id: 'F4', label: 'Fá 4', note: 'F4', T: 1, F: '1111011' },
             { id: 'G4', label: 'Sol 4', note: 'G4', T: 1, F: '1110000' },
             { id: 'A4', label: 'Lá 4', note: 'A4', T: 1, F: '1100000' },
             { id: 'B4', label: 'Si 4', note: 'B4', T: 1, F: '1000000' },
-            
-            // OITAVA 2 (C5 a C6)
             { id: 'C5', label: 'Dó 5', note: 'C5', T: 1, F: '0100000' },
             { id: 'D5', label: 'Ré 5', note: 'D5', T: 0, F: '0100000' },
-            { id: 'E5', label: 'Mi 5', note: 'E5', T: 0.5, F: '1111100' }, // Técnica de registro
+            { id: 'E5', label: 'Mi 5', note: 'E5', T: 0.5, F: '1111100' },
             { id: 'F5', label: 'Fá 5', note: 'F5', T: 0.5, F: '1111010' },
             { id: 'G5', label: 'Sol 5', note: 'G5', T: 0.5, F: '1110000' },
             { id: 'A5', label: 'Lá 5', note: 'A5', T: 0.5, F: '1100000' },
-            { id: 'B5', label: 'Si 5', note: 'B5', T: 0.5, F: '1101100' }, // Digitação padrão aguda
+            { id: 'B5', label: 'Si 5', note: 'B5', T: 0.5, F: '1101100' },
             { id: 'C6', label: 'Dó 6', note: 'C6', T: 0.5, F: '1101000' }
         ];
 
-        // --- GERAÇÃO DA INTERFACE DOS DIAGRAMAS ---
         const diagramContainer = document.getElementById('recorder-diagrams');
+        const statusEl = document.getElementById('audio-status');
 
         fingeringData.forEach((data) => {
-            // Criar elemento principal da nota
             const noteEl = document.createElement('div');
             noteEl.classList.add('note-diagram');
             noteEl.dataset.note = data.note;
-            
-            // Rótulo
+
             const labelEl = document.createElement('div');
             labelEl.classList.add('note-label');
             labelEl.innerText = data.label;
             noteEl.appendChild(labelEl);
 
-            // Visual da Flauta
             const visualEl = document.createElement('div');
             visualEl.classList.add('recorder-visual');
 
-            // 1. Polegar (Thumb) - Atrás
             const thumbHole = document.createElement('div');
             thumbHole.classList.add('hole', 'thumb');
             if (data.T === 1) thumbHole.classList.add('closed');
             else if (data.T === 0.5) thumbHole.classList.add('half');
             visualEl.appendChild(thumbHole);
 
-            // 2. Orifícios da Frente (7 em linha)
             for (let i = 0; i < 7; i++) {
                 const hole = document.createElement('div');
                 hole.classList.add('hole', 'front');
@@ -324,119 +330,103 @@
             diagramContainer.appendChild(noteEl);
         });
 
-        // --- MOTOR DE ÁUDIO COM SOUNDFONT-PLAYER (Timbre: Flauta) ---
-        let ac;
-        let instrument;
-        const activeNotes = {};
+        let ac = null;
+        let instrument = null;
+        let currentPlaying = null;
         let isInitializing = false;
 
-        async function initAudioAndPlay(noteId) {
-            if (isInitializing) return;
-            
+        async function initAudio() {
+            if (instrument || isInitializing) return;
             isInitializing = true;
-            // Inicia o AudioContext após a primeira interação do utilizador
-            ac = new (window.AudioContext || window.webkitAudioContext)();
-            
+            statusEl.textContent = 'carregando áudio...';
+
             try {
-                // Garante que o AudioContext não está suspenso (política de browsers modernos)
+                ac = new (window.AudioContext || window.webkitAudioContext)();
+
                 if (ac.state === 'suspended') {
                     await ac.resume();
                 }
-                // Carrega o timbre de flauta doce (recorder)
+
                 instrument = await Soundfont.instrument(ac, 'recorder');
-                playSound(noteId); // Toca a nota em que o utilizador clicou
+                statusEl.textContent = 'áudio pronto';
             } catch (err) {
-                console.error("Erro no Soundfont:", err);
+                console.error('Erro no áudio:', err);
+                statusEl.textContent = 'áudio bloqueado';
             } finally {
                 isInitializing = false;
             }
         }
 
-        async function ensureAudioResumed() {
+        async function ensureAudioReady() {
+            if (!instrument) {
+                await initAudio();
+            }
+
             if (ac && ac.state === 'suspended') {
                 await ac.resume();
             }
+
+            return !!instrument;
         }
 
-        function playSound(noteId) {
-            if (!instrument) return;
-            
-            // Para som anterior para evitar acúmulo (característica de sopro)
-            Object.values(activeNotes).forEach(n => n.stop());
-            
-            // Toca a nota com volume total
-function transposeUp(note) {
-    const match = note.match(/^([A-G]#?)(\d)$/);
-    if (!match) return note;
-    const pitch = match[1];
-    const octave = parseInt(match[2]);
-    return pitch + (octave + 1);
-}
+        function stopAllSounds() {
+            if (currentPlaying && typeof currentPlaying.stop === 'function') {
+                try {
+                    currentPlaying.stop();
+                } catch (e) {
+                    console.warn('Erro ao parar nota:', e);
+                }
+            }
+            currentPlaying = null;
+            document.querySelectorAll('.note-diagram.active').forEach(el => el.classList.remove('active'));
+        }
 
-const transposedNote = transposeUp(noteId);
-activeNotes[noteId] = instrument.play(transposedNote, ac.currentTime, { gain: 1 });            
-            // Atualiza UI
-            const diagramEl = document.querySelector(`[data-note="${noteId}"]`);
+        async function playSound(noteId, diagramEl) {
+            const ok = await ensureAudioReady();
+            if (!ok) return;
+
+            stopAllSounds();
+
+            currentPlaying = instrument.play(noteId, ac.currentTime, {
+                gain: 1,
+                duration: 1.5
+            });
+
             if (diagramEl) diagramEl.classList.add('active');
+            statusEl.textContent = 'tocando';
         }
 
-        function stopSound(noteId) {
-            if (!instrument || !activeNotes[noteId]) return;
-            
-            // Interrompe o som
-            activeNotes[noteId].stop();
-            delete activeNotes[noteId];
-
-            // Atualiza UI
-            const diagramEl = document.querySelector(`[data-note="${noteId}"]`);
+        function stopSound(diagramEl) {
+            stopAllSounds();
             if (diagramEl) diagramEl.classList.remove('active');
+            statusEl.textContent = instrument ? 'áudio pronto' : 'toque para ouvir';
         }
 
-        // --- CONTROLES COM MOUSE E TOQUE (Nos Diagramas) ---
         const diagrams = document.querySelectorAll('.note-diagram');
-        
+
         diagrams.forEach(diag => {
-            // Eventos de Mouse
-            diag.addEventListener('mousedown', (e) => {
-                if(e.button !== 0) return; // Apenas clique com o botão esquerdo
-                
-                if (!instrument) {
-                    initAudioAndPlay(diag.dataset.note);
-                } else {
-                    ensureAudioResumed().then(() => playSound(diag.dataset.note)).catch(err => console.error("Erro ao retomar áudio:", err));
-                }
-            });
-            
-            diag.addEventListener('mouseup', () => {
-                stopSound(diag.dataset.note);
-            });
-            
-            diag.addEventListener('mouseleave', () => {
-                stopSound(diag.dataset.note);
-            });
-
-            // Eventos de Toque (Mobile/Tablet)
-            diag.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Evita disparo duplicado com eventos de mouse
-                
-                if (!instrument) {
-                    initAudioAndPlay(diag.dataset.note);
-                } else {
-                    ensureAudioResumed().then(() => playSound(diag.dataset.note)).catch(err => console.error("Erro ao retomar áudio:", err));
-                }
-            }, { passive: false });
-
-            diag.addEventListener('touchend', (e) => {
+            diag.addEventListener('pointerdown', async (e) => {
                 e.preventDefault();
-                stopSound(diag.dataset.note);
-            }, { passive: false });
+                await playSound(diag.dataset.note, diag);
+            });
 
-            diag.addEventListener('touchcancel', (e) => {
+            diag.addEventListener('pointerup', (e) => {
                 e.preventDefault();
-                stopSound(diag.dataset.note);
-            }, { passive: false });
+                stopSound(diag);
+            });
+
+            diag.addEventListener('pointerleave', () => {
+                stopSound(diag);
+            });
+
+            diag.addEventListener('pointercancel', () => {
+                stopSound(diag);
+            });
         });
 
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stopAllSounds();
+        });
     </script>
 </body>
 </html>
