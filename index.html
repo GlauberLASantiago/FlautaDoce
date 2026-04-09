@@ -380,7 +380,15 @@
             currentPlaying = null;
             document.querySelectorAll('.note-diagram.active').forEach(el => el.classList.remove('active'));
         }
+function transposeUp(note) {
+    const match = note.match(/^([A-G]#?)(\d)$/);
+    if (!match) return note;
 
+    const pitch = match[1];
+    const octave = parseInt(match[2]);
+
+    return pitch + (octave + 1);
+}
         async function playSound(noteId, diagramEl) {
             const ok = await ensureAudioReady();
             if (!ok) return;
