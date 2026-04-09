@@ -337,6 +337,10 @@
             ac = new (window.AudioContext || window.webkitAudioContext)();
             
             try {
+                // Garante que o AudioContext não está suspenso (política de browsers modernos)
+                if (ac.state === 'suspended') {
+                    await ac.resume();
+                }
                 // Carrega o timbre de flauta doce (recorder)
                 instrument = await Soundfont.instrument(ac, 'recorder');
                 playSound(noteId); // Toca a nota em que o utilizador clicou
@@ -344,6 +348,12 @@
                 console.error("Erro no Soundfont:", err);
             } finally {
                 isInitializing = false;
+            }
+        }
+
+        async function ensureAudioResumed() {
+            if (ac && ac.state === 'suspended') {
+                await ac.resume();
             }
         }
 
@@ -373,18 +383,18 @@
             if (diagramEl) diagramEl.classList.remove('active');
         }
 
-        // --- CONTROLES APENAS COM O MOUSE (Nos Diagramas) ---
+        // --- CONTROLES COM MOUSE E TOQUE (Nos Diagramas) ---
         const diagrams = document.querySelectorAll('.note-diagram');
         
         diagrams.forEach(diag => {
+            // Eventos de Mouse
             diag.addEventListener('mousedown', (e) => {
                 if(e.button !== 0) return; // Apenas clique com o botão esquerdo
                 
                 if (!instrument) {
-                    // Inicia o áudio no primeiro clique
                     initAudioAndPlay(diag.dataset.note);
                 } else {
-                    playSound(diag.dataset.note);
+                    ensureAudioResumed().then(() => playSound(diag.dataset.note)).catch(err => console.error("Erro ao retomar áudio:", err));
                 }
             });
             
@@ -395,6 +405,27 @@
             diag.addEventListener('mouseleave', () => {
                 stopSound(diag.dataset.note);
             });
+
+            // Eventos de Toque (Mobile/Tablet)
+            diag.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Evita disparo duplicado com eventos de mouse
+                
+                if (!instrument) {
+                    initAudioAndPlay(diag.dataset.note);
+                } else {
+                    ensureAudioResumed().then(() => playSound(diag.dataset.note)).catch(err => console.error("Erro ao retomar áudio:", err));
+                }
+            }, { passive: false });
+
+            diag.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                stopSound(diag.dataset.note);
+            }, { passive: false });
+
+            diag.addEventListener('touchcancel', (e) => {
+                e.preventDefault();
+                stopSound(diag.dataset.note);
+            }, { passive: false });
         });
 
     </script>
