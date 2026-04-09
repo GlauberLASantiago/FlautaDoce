@@ -394,7 +394,7 @@
                 if (!instrument) {
                     initAudioAndPlay(diag.dataset.note);
                 } else {
-                    ensureAudioResumed().then(() => playSound(diag.dataset.note));
+                    ensureAudioResumed().then(() => playSound(diag.dataset.note)).catch(err => console.error("Erro ao retomar áudio:", err));
                 }
             });
             
@@ -413,7 +413,7 @@
                 if (!instrument) {
                     initAudioAndPlay(diag.dataset.note);
                 } else {
-                    ensureAudioResumed().then(() => playSound(diag.dataset.note));
+                    ensureAudioResumed().then(() => playSound(diag.dataset.note)).catch(err => console.error("Erro ao retomar áudio:", err));
                 }
             }, { passive: false });
 
