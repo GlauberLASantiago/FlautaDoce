@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -112,6 +112,7 @@
         .controls-wrapper {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 15px;
             flex-wrap: wrap;
             width: 100%;
@@ -168,6 +169,69 @@
             border-color: #ff00ff;
             box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
             color: #fff;
+        }
+
+        /* Estilos do Fader de Reverb */
+        .fader-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(17, 17, 17, 0.8);
+            border: 2px solid #aa00ff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(170, 0, 255, 0.4);
+            transition: all 0.2s;
+        }
+
+        .fader-container:hover {
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+        }
+
+        .fader-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: #ffcc00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 90px;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #1a1a1a;
+            border-radius: 3px;
+            border: 1px solid #6200ea;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            border: 2px solid #ffcc00;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #aa00ff;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 0 8px #ff00ff;
+            transition: transform 0.1s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
         }
 
         .recorder-wrapper {
@@ -350,7 +414,7 @@
         .audio-status {
             position: absolute;
             right: 15px;
-            bottom: 6px; /* Ajustado para ficar perfeitamente no novo espaço inferior */
+            bottom: 6px;
             font-size: 0.72rem;
             opacity: 0.75;
             z-index: 30;
@@ -402,6 +466,11 @@
                 <option value="tenor">Tenor</option>
             </select>
             <button id="toggle-labels-btn" class="control-btn">Ocultar Notas</button>
+            
+            <div class="fader-container">
+                <label for="reverb-fader" class="fader-label">Reverb</label>
+                <input type="range" id="reverb-fader" min="0" max="1" step="0.01" value="0.35">
+            </div>
         </div>
 
         <div class="recorder-wrapper">
@@ -466,11 +535,16 @@
         const statusEl = document.getElementById('audio-status');
         const instrumentSelect = document.getElementById('instrument-select');
         const toggleLabelsBtn = document.getElementById('toggle-labels-btn');
+        const reverbFader = document.getElementById('reverb-fader');
 
         let ac = null;
         let instrument = null;
         let currentPlaying = null;
         let isInitializing = false;
+
+        // Nós de Áudio para o Reverb
+        let inputNode = null;
+        let reverbGainNode = null;
 
         function renderFlute(instrumentKey) {
             stopAllSounds();
@@ -542,16 +616,53 @@
             });
         }
 
+        // Função para criar uma resposta a impulsos sintética (simula o som a ressaltar numa sala)
+        function createReverbBuffer(audioContext, duration, decay) {
+            const sampleRate = audioContext.sampleRate;
+            const length = sampleRate * duration;
+            const impulse = audioContext.createBuffer(2, length, sampleRate);
+            const impulseL = impulse.getChannelData(0);
+            const impulseR = impulse.getChannelData(1);
+
+            for (let i = 0; i < length; i++) {
+                const n = i === 0 ? 1 : i;
+                impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+                impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+            }
+            return impulse;
+        }
+
         async function initAudio() {
             if (instrument || isInitializing) return;
             isInitializing = true;
-            statusEl.textContent = 'carregando áudio...';
+            statusEl.textContent = 'a carregar áudio...';
 
             try {
                 ac = new (window.AudioContext || window.webkitAudioContext)();
 
                 if (ac.state === 'suspended') {
                     await ac.resume();
+                }
+
+                // Configurar o roteamento de áudio com Reverb
+                if (!inputNode) {
+                    inputNode = ac.createGain();
+                    const reverbNode = ac.createConvolver();
+                    reverbGainNode = ac.createGain();
+                    const dryGainNode = ac.createGain();
+
+                    // Gerar o Reverb
+                    reverbNode.buffer = createReverbBuffer(ac, 2.5, 2.0);
+
+                    // Ligações: Input -> [Dry, Reverb] -> Destination
+                    inputNode.connect(dryGainNode);
+                    inputNode.connect(reverbNode);
+                    reverbNode.connect(reverbGainNode);
+                    dryGainNode.connect(ac.destination);
+                    reverbGainNode.connect(ac.destination);
+
+                    dryGainNode.gain.value = 1.0;
+                    reverbGainNode.gain.value = parseFloat(reverbFader.value);
                 }
 
                 instrument = await Soundfont.instrument(ac, 'recorder');
@@ -594,11 +705,12 @@
 
             currentPlaying = instrument.play(playbackNote, ac.currentTime, {
                 gain: 1,
-                duration: 1.5
+                duration: 1.5,
+                destination: inputNode // O som vai passar pelo nosso sistema de reverb
             });
 
             if (diagramEl) diagramEl.classList.add('active');
-            statusEl.textContent = 'tocando';
+            statusEl.textContent = 'a tocar';
         }
 
         function stopSound(diagramEl) {
@@ -613,6 +725,12 @@
 
         instrumentSelect.addEventListener('change', (e) => {
             renderFlute(e.target.value);
+        });
+
+        reverbFader.addEventListener('input', (e) => {
+            if (reverbGainNode) {
+                reverbGainNode.gain.value = parseFloat(e.target.value);
+            }
         });
 
         let labelsVisible = true;
