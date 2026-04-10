@@ -63,7 +63,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             animation: float 4s ease-in-out infinite;
         }
 
@@ -107,6 +107,67 @@
             border: 1px solid #e0b0ff;
             box-shadow: 0 0 10px rgba(170, 0, 255, 0.6);
             white-space: nowrap;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-bottom: 15px;
+            z-index: 10;
+        }
+
+        .instrument-select {
+            background: rgba(17, 17, 17, 0.8);
+            color: #ffcc00;
+            border: 2px solid #aa00ff;
+            padding: 8px 35px 8px 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(170, 0, 255, 0.4);
+            appearance: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffcc00' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .instrument-select:hover, .instrument-select:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+            color: #fff;
+        }
+
+        .control-btn {
+            background: rgba(17, 17, 17, 0.8);
+            color: #ffcc00;
+            border: 2px solid #aa00ff;
+            padding: 8px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(170, 0, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover, .control-btn:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+            color: #fff;
         }
 
         .recorder-wrapper {
@@ -178,6 +239,12 @@
             margin-bottom: 5px;
             text-shadow: 0 0 5px rgba(255,204,0,0.7);
             white-space: nowrap;
+            transition: opacity 0.3s ease;
+        }
+
+        .hide-labels .note-label {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .note-diagram.chromatic .note-label {
@@ -310,6 +377,15 @@
             </div>
         </div>
 
+        <div class="controls-wrapper">
+            <select id="instrument-select" class="instrument-select">
+                <option value="soprano">Soprano</option>
+                <option value="alto">Contralto</option>
+                <option value="tenor">Tenor</option>
+            </select>
+            <button id="toggle-labels-btn" class="control-btn">Ocultar Notas</button>
+        </div>
+
         <div class="recorder-wrapper">
             <div class="diagram-container" id="recorder-diagrams"></div>
             <div class="audio-status" id="audio-status">toque para ouvir</div>
@@ -317,77 +393,136 @@
     </div>
 
     <script>
-        // H representa o meio-furo (Half-hole) usado em posições cromáticas
-        const fingeringData = [
-            { id: 'C4', label: 'Dó 4', note: 'C4', T: 1, F: '1111111' },
-            { id: 'C#4', label: 'Dó# 4', note: 'C#4', T: 1, F: '111111H', chromatic: true },
-            { id: 'D4', label: 'Ré 4', note: 'D4', T: 1, F: '1111110' },
-            { id: 'D#4', label: 'Ré# 4', note: 'D#4', T: 1, F: '11111H0', chromatic: true },
-            { id: 'E4', label: 'Mi 4', note: 'E4', T: 1, F: '1111100' },
-            { id: 'F4', label: 'Fá 4', note: 'F4', T: 1, F: '1111011' },
-            { id: 'F#4', label: 'Fá# 4', note: 'F#4', T: 1, F: '1111010', chromatic: true },
-            { id: 'G4', label: 'Sol 4', note: 'G4', T: 1, F: '1110000' },
-            { id: 'G#4', label: 'Sol# 4', note: 'G#4', T: 1, F: '1110110', chromatic: true },
-            { id: 'A4', label: 'Lá 4', note: 'A4', T: 1, F: '1100000' },
-            { id: 'A#4', label: 'Lá# 4', note: 'A#4', T: 1, F: '1011000', chromatic: true },
-            { id: 'B4', label: 'Si 4', note: 'B4', T: 1, F: '1000000' },
-            { id: 'C5', label: 'Dó 5', note: 'C5', T: 1, F: '0100000' },
-            { id: 'C#5', label: 'Dó# 5', note: 'C#5', T: 0, F: '1100000', chromatic: true },
-            { id: 'D5', label: 'Ré 5', note: 'D5', T: 0, F: '0100000' },
-            { id: 'D#5', label: 'Ré# 5', note: 'D#5', T: 0, F: '0111110', chromatic: true },
-            { id: 'E5', label: 'Mi 5', note: 'E5', T: 0.5, F: '1111100' },
-            { id: 'F5', label: 'Fá 5', note: 'F5', T: 0.5, F: '1111010' },
-            { id: 'F#5', label: 'Fá# 5', note: 'F#5', T: 0.5, F: '1110100', chromatic: true },
-            { id: 'G5', label: 'Sol 5', note: 'G5', T: 0.5, F: '1110000' },
-            { id: 'G#5', label: 'Sol# 5', note: 'G#5', T: 0.5, F: '1110110', chromatic: true },
-            { id: 'A5', label: 'Lá 5', note: 'A5', T: 0.5, F: '1100000' },
-            { id: 'A#5', label: 'Lá# 5', note: 'A#5', T: 0.5, F: '1101100', chromatic: true },
-            { id: 'B5', label: 'Si 5', note: 'B5', T: 0.5, F: '1100100' },
-            { id: 'C6', label: 'Dó 6', note: 'C6', T: 0.5, F: '1101000' }
+        // Array de dedilhados relativos base (0 = nota mais grave da flauta, todos furos fechados)
+        const baseFingerings = [
+            { T: 1, F: '1111111', c: false }, // 0
+            { T: 1, F: '111111H', c: true },  // 1
+            { T: 1, F: '1111110', c: false }, // 2
+            { T: 1, F: '11111H0', c: true },  // 3
+            { T: 1, F: '1111100', c: false }, // 4
+            { T: 1, F: '1111011', c: false }, // 5 
+            { T: 1, F: '1111010', c: true },  // 6 
+            { T: 1, F: '1110000', c: false }, // 7 
+            { T: 1, F: '1110110', c: true },  // 8 
+            { T: 1, F: '1100000', c: false }, // 9 
+            { T: 1, F: '1011000', c: true },  // 10 
+            { T: 1, F: '1000000', c: false }, // 11 
+            { T: 1, F: '0100000', c: false }, // 12 (Oitava)
+            { T: 0, F: '1100000', c: true },  // 13 
+            { T: 0, F: '0100000', c: false }, // 14 
+            { T: 0, F: '0111110', c: true },  // 15 
+            { T: 0.5, F: '1111100', c: false }, // 16 
+            { T: 0.5, F: '1111010', c: false }, // 17 
+            { T: 0.5, F: '1110100', c: true },  // 18 
+            { T: 0.5, F: '1110000', c: false }, // 19 
+            { T: 0.5, F: '1110110', c: true },  // 20 
+            { T: 0.5, F: '1100000', c: false }, // 21 
+            { T: 0.5, F: '1101100', c: true },  // 22 
+            { T: 0.5, F: '1100100', c: false }, // 23 
+            { T: 0.5, F: '1101000', c: false }  // 24 
         ];
+
+        const noteNamesBr = ['Dó', 'Dó#', 'Ré', 'Ré#', 'Mi', 'Fá', 'Fá#', 'Sol', 'Sol#', 'Lá', 'Lá#', 'Si'];
+        const noteNamesEn = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+        // Configurações de transposição para gerar nomes e oitavas de reprodução de acordo com o instrumento
+        const instrumentsConfig = {
+            soprano: { 
+                startNoteIndex: 0, // Inicia no Dó
+                startOctave: 4,    // Dó 4 visualmente
+                playbackOctaveOffset: 1 // Soa uma oitava acima (Dó 5)
+            },
+            alto: { 
+                startNoteIndex: 5, // Inicia no Fá
+                startOctave: 4,    // Fá 4 visualmente
+                playbackOctaveOffset: 0 // Soa no tom exato (Fá 4)
+            },
+            tenor: { 
+                startNoteIndex: 0, // Inicia no Dó
+                startOctave: 3,    // Dó 3 visualmente
+                playbackOctaveOffset: 1 // Soa na oitava Dó 4
+            }
+        };
 
         const diagramContainer = document.getElementById('recorder-diagrams');
         const statusEl = document.getElementById('audio-status');
-
-        fingeringData.forEach((data) => {
-            const noteEl = document.createElement('div');
-            noteEl.classList.add('note-diagram');
-            if (data.chromatic) noteEl.classList.add('chromatic');
-            noteEl.dataset.note = data.note;
-
-            const labelEl = document.createElement('div');
-            labelEl.classList.add('note-label');
-            labelEl.innerText = data.label;
-            noteEl.appendChild(labelEl);
-
-            const visualEl = document.createElement('div');
-            visualEl.classList.add('recorder-visual');
-
-            const thumbHole = document.createElement('div');
-            thumbHole.classList.add('hole', 'thumb');
-            if (data.T === 1) thumbHole.classList.add('closed');
-            else if (data.T === 0.5) thumbHole.classList.add('half');
-            visualEl.appendChild(thumbHole);
-
-            for (let i = 0; i < 7; i++) {
-                const hole = document.createElement('div');
-                hole.classList.add('hole', 'front');
-                if (data.F[i] === '1') {
-                    hole.classList.add('closed');
-                } else if (data.F[i] === 'H') {
-                    hole.classList.add('half');
-                }
-                visualEl.appendChild(hole);
-            }
-
-            noteEl.appendChild(visualEl);
-            diagramContainer.appendChild(noteEl);
-        });
+        const instrumentSelect = document.getElementById('instrument-select');
+        const toggleLabelsBtn = document.getElementById('toggle-labels-btn');
 
         let ac = null;
         let instrument = null;
         let currentPlaying = null;
         let isInitializing = false;
+
+        function renderFlute(instrumentKey) {
+            stopAllSounds();
+            diagramContainer.innerHTML = ''; 
+            const config = instrumentsConfig[instrumentKey];
+
+            baseFingerings.forEach((data, index) => {
+                // Cálculo matemático perfeito para transpor escalas
+                const noteIndex = (config.startNoteIndex + index) % 12;
+                const octaveShift = Math.floor((config.startNoteIndex + index) / 12);
+                
+                const writtenOctave = config.startOctave + octaveShift;
+                const playbackOctave = writtenOctave + config.playbackOctaveOffset;
+
+                const labelText = `${noteNamesBr[noteIndex]} ${writtenOctave}`;
+                const playbackNote = `${noteNamesEn[noteIndex]}${playbackOctave}`;
+
+                const noteEl = document.createElement('div');
+                noteEl.classList.add('note-diagram');
+                if (data.c) noteEl.classList.add('chromatic');
+                noteEl.dataset.note = playbackNote;
+
+                const labelEl = document.createElement('div');
+                labelEl.classList.add('note-label');
+                labelEl.innerText = labelText;
+                noteEl.appendChild(labelEl);
+
+                const visualEl = document.createElement('div');
+                visualEl.classList.add('recorder-visual');
+
+                const thumbHole = document.createElement('div');
+                thumbHole.classList.add('hole', 'thumb');
+                if (data.T === 1) thumbHole.classList.add('closed');
+                else if (data.T === 0.5) thumbHole.classList.add('half');
+                visualEl.appendChild(thumbHole);
+
+                for (let i = 0; i < 7; i++) {
+                    const hole = document.createElement('div');
+                    hole.classList.add('hole', 'front');
+                    if (data.F[i] === '1') {
+                        hole.classList.add('closed');
+                    } else if (data.F[i] === 'H') {
+                        hole.classList.add('half');
+                    }
+                    visualEl.appendChild(hole);
+                }
+
+                noteEl.appendChild(visualEl);
+                diagramContainer.appendChild(noteEl);
+
+                // Eventos de Toque
+                noteEl.addEventListener('pointerdown', async (e) => {
+                    e.preventDefault();
+                    await playSound(playbackNote, noteEl);
+                });
+
+                noteEl.addEventListener('pointerup', (e) => {
+                    e.preventDefault();
+                    stopSound(noteEl);
+                });
+
+                noteEl.addEventListener('pointerleave', () => {
+                    stopSound(noteEl);
+                });
+
+                noteEl.addEventListener('pointercancel', () => {
+                    stopSound(noteEl);
+                });
+            });
+        }
 
         async function initAudio() {
             if (instrument || isInitializing) return;
@@ -415,11 +550,9 @@
             if (!instrument) {
                 await initAudio();
             }
-
             if (ac && ac.state === 'suspended') {
                 await ac.resume();
             }
-
             return !!instrument;
         }
 
@@ -434,26 +567,14 @@
             currentPlaying = null;
             document.querySelectorAll('.note-diagram.active').forEach(el => el.classList.remove('active'));
         }
-        
-        function transposeUp(note) {
-            const match = note.match(/^([A-G]#?)(\d)$/);
-            if (!match) return note;
 
-            const pitch = match[1];
-            const octave = parseInt(match[2]);
-
-            return pitch + (octave + 1);
-        }
-
-        async function playSound(noteId, diagramEl) {
+        async function playSound(playbackNote, diagramEl) {
             const ok = await ensureAudioReady();
             if (!ok) return;
 
             stopAllSounds();
 
-            const transposedNote = transposeUp(noteId);
-
-            currentPlaying = instrument.play(transposedNote, ac.currentTime, {
+            currentPlaying = instrument.play(playbackNote, ac.currentTime, {
                 gain: 1,
                 duration: 1.5
             });
@@ -468,31 +589,28 @@
             statusEl.textContent = instrument ? 'áudio pronto' : 'toque para ouvir';
         }
 
-        const diagrams = document.querySelectorAll('.note-diagram');
-
-        diagrams.forEach(diag => {
-            diag.addEventListener('pointerdown', async (e) => {
-                e.preventDefault();
-                await playSound(diag.dataset.note, diag);
-            });
-
-            diag.addEventListener('pointerup', (e) => {
-                e.preventDefault();
-                stopSound(diag);
-            });
-
-            diag.addEventListener('pointerleave', () => {
-                stopSound(diag);
-            });
-
-            diag.addEventListener('pointercancel', () => {
-                stopSound(diag);
-            });
-        });
-
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) stopAllSounds();
         });
+
+        instrumentSelect.addEventListener('change', (e) => {
+            renderFlute(e.target.value);
+        });
+
+        let labelsVisible = true;
+        toggleLabelsBtn.addEventListener('click', () => {
+            labelsVisible = !labelsVisible;
+            if (labelsVisible) {
+                diagramContainer.classList.remove('hide-labels');
+                toggleLabelsBtn.textContent = 'Ocultar Notas';
+            } else {
+                diagramContainer.classList.add('hide-labels');
+                toggleLabelsBtn.textContent = 'Mostrar Notas';
+            }
+        });
+
+        // Inicializa com Soprano
+        renderFlute('soprano');
     </script>
 </body>
 </html>
