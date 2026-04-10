@@ -63,8 +63,16 @@
 
         .header {
             text-align: center;
-            margin-bottom: 0px;
+            margin-bottom: 15px;
             animation: float 4s ease-in-out infinite;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         @keyframes float {
@@ -87,28 +95,18 @@
             margin-bottom: 2px;
         }
 
-        .subtitle-wrapper {
-            position: absolute;
-            top: 85%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 20;
-            pointer-events: none;
-            display: inline-block;
-            background: linear-gradient(to right, #6200ea, #aa00ff, #6200ea);
-            padding: 3px 15px;
-            border-radius: 50px;
-            border: 2px solid #e0b0ff;
-            box-shadow: 0 0 15px rgba(170, 0, 255, 0.6), inset 0 0 8px rgba(255,255,255,0.3);
-        }
-
-        .subtitle {
-            font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+        .prof-name {
+            font-size: clamp(0.6rem, 1.5vw, 0.85rem);
             font-weight: 800;
             color: #ffffff;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #6200ea, #aa00ff);
+            padding: 4px 12px;
+            border-radius: 50px;
+            border: 1px solid #e0b0ff;
+            box-shadow: 0 0 10px rgba(170, 0, 255, 0.6);
+            white-space: nowrap;
         }
 
         .recorder-wrapper {
@@ -125,12 +123,12 @@
         .diagram-container {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: flex-end; /* Alinha na base para criar o efeito degrau */
             width: 100%;
-            height: clamp(100px, 30vh, 160px);
+            height: clamp(140px, 35vh, 200px); /* Aumentado para acomodar o deslocamento */
             overflow-x: auto;
             overflow-y: hidden;
-            padding: 0 6px 5px 20px;
+            padding: 40px 6px 15px 20px;
             gap: 2px;
             touch-action: manipulation;
             scrollbar-width: thin;
@@ -147,6 +145,7 @@
             position: relative;
             z-index: 1;
             min-width: 44px;
+            transform: translateY(0px); /* Posição base notas diatonicas */
         }
 
         .note-diagram:hover {
@@ -157,6 +156,20 @@
             transform: translateY(2px);
         }
 
+        /* Classes específicas para as Notas Cromáticas (sustenidos) */
+        .note-diagram.chromatic {
+            transform: translateY(-30px);
+            z-index: 2; /* Sobrepor vizinhos se necessário */
+        }
+
+        .note-diagram.chromatic:hover {
+            transform: translateY(-33px);
+        }
+
+        .note-diagram.chromatic.active {
+            transform: translateY(-28px);
+        }
+
         .note-label {
             font-family: 'Anton', sans-serif;
             font-size: 1rem;
@@ -165,6 +178,12 @@
             margin-bottom: 5px;
             text-shadow: 0 0 5px rgba(255,204,0,0.7);
             white-space: nowrap;
+        }
+
+        .note-diagram.chromatic .note-label {
+            color: #ff99ff;
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px rgba(255,153,255,0.7);
         }
 
         .recorder-visual {
@@ -190,6 +209,11 @@
             border-color: #fff;
         }
 
+        .hole.front.half {
+            background: linear-gradient(to right, #fff 50%, transparent 50%);
+            border-color: #fff;
+        }
+
         .hole.thumb {
             position: absolute;
             left: -7px;
@@ -209,6 +233,12 @@
 
         .note-diagram.active .hole.closed {
             background: #00ffff;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0,255,255,0.8);
+        }
+        
+        .note-diagram.active .hole.front.half {
+            background: linear-gradient(to right, #00ffff 50%, transparent 50%);
             border-color: #00ffff;
             box-shadow: 0 0 10px rgba(0,255,255,0.8);
         }
@@ -246,11 +276,20 @@
                 justify-content: flex-start;
                 gap: 6px;
                 padding-left: 24px;
+                height: clamp(140px, 35vh, 180px);
+                padding-top: 35px;
             }
 
-            .subtitle-wrapper {
-                top: 64%;
-                padding: 3px 10px;
+            .note-diagram.chromatic {
+                transform: translateY(-20px);
+            }
+
+            .note-diagram.chromatic:hover {
+                transform: translateY(-23px);
+            }
+
+            .note-diagram.chromatic.active {
+                transform: translateY(-18px);
             }
 
             .note-label {
@@ -265,35 +304,45 @@
 
     <div class="main-container">
         <div class="header">
-            <h1 class="title">FLAUTA DOCE</h1>
+            <div class="title-group">
+                <h1 class="title">FLAUTA DOCE</h1>
+                <span class="prof-name">Profa. Isamara Carvalho</span>
+            </div>
         </div>
 
         <div class="recorder-wrapper">
-            <div class="subtitle-wrapper">
-                <span class="subtitle">- Profa. Isamara Carvalho -</span>
-            </div>
-
             <div class="diagram-container" id="recorder-diagrams"></div>
             <div class="audio-status" id="audio-status">toque para ouvir</div>
         </div>
     </div>
 
     <script>
+        // H representa o meio-furo (Half-hole) usado em posições cromáticas
         const fingeringData = [
             { id: 'C4', label: 'Dó 4', note: 'C4', T: 1, F: '1111111' },
+            { id: 'C#4', label: 'Dó# 4', note: 'C#4', T: 1, F: '111111H', chromatic: true },
             { id: 'D4', label: 'Ré 4', note: 'D4', T: 1, F: '1111110' },
+            { id: 'D#4', label: 'Ré# 4', note: 'D#4', T: 1, F: '11111H0', chromatic: true },
             { id: 'E4', label: 'Mi 4', note: 'E4', T: 1, F: '1111100' },
             { id: 'F4', label: 'Fá 4', note: 'F4', T: 1, F: '1111011' },
+            { id: 'F#4', label: 'Fá# 4', note: 'F#4', T: 1, F: '1111010', chromatic: true },
             { id: 'G4', label: 'Sol 4', note: 'G4', T: 1, F: '1110000' },
+            { id: 'G#4', label: 'Sol# 4', note: 'G#4', T: 1, F: '1110110', chromatic: true },
             { id: 'A4', label: 'Lá 4', note: 'A4', T: 1, F: '1100000' },
+            { id: 'A#4', label: 'Lá# 4', note: 'A#4', T: 1, F: '1011000', chromatic: true },
             { id: 'B4', label: 'Si 4', note: 'B4', T: 1, F: '1000000' },
             { id: 'C5', label: 'Dó 5', note: 'C5', T: 1, F: '0100000' },
+            { id: 'C#5', label: 'Dó# 5', note: 'C#5', T: 0, F: '1100000', chromatic: true },
             { id: 'D5', label: 'Ré 5', note: 'D5', T: 0, F: '0100000' },
+            { id: 'D#5', label: 'Ré# 5', note: 'D#5', T: 0, F: '0111110', chromatic: true },
             { id: 'E5', label: 'Mi 5', note: 'E5', T: 0.5, F: '1111100' },
             { id: 'F5', label: 'Fá 5', note: 'F5', T: 0.5, F: '1111010' },
+            { id: 'F#5', label: 'Fá# 5', note: 'F#5', T: 0.5, F: '1110100', chromatic: true },
             { id: 'G5', label: 'Sol 5', note: 'G5', T: 0.5, F: '1110000' },
+            { id: 'G#5', label: 'Sol# 5', note: 'G#5', T: 0.5, F: '1110110', chromatic: true },
             { id: 'A5', label: 'Lá 5', note: 'A5', T: 0.5, F: '1100000' },
-            { id: 'B5', label: 'Si 5', note: 'B5', T: 0.5, F: '1101100' },
+            { id: 'A#5', label: 'Lá# 5', note: 'A#5', T: 0.5, F: '1101100', chromatic: true },
+            { id: 'B5', label: 'Si 5', note: 'B5', T: 0.5, F: '1100100' },
             { id: 'C6', label: 'Dó 6', note: 'C6', T: 0.5, F: '1101000' }
         ];
 
@@ -303,6 +352,7 @@
         fingeringData.forEach((data) => {
             const noteEl = document.createElement('div');
             noteEl.classList.add('note-diagram');
+            if (data.chromatic) noteEl.classList.add('chromatic');
             noteEl.dataset.note = data.note;
 
             const labelEl = document.createElement('div');
@@ -322,7 +372,11 @@
             for (let i = 0; i < 7; i++) {
                 const hole = document.createElement('div');
                 hole.classList.add('hole', 'front');
-                if (data.F[i] === '1') hole.classList.add('closed');
+                if (data.F[i] === '1') {
+                    hole.classList.add('closed');
+                } else if (data.F[i] === 'H') {
+                    hole.classList.add('half');
+                }
                 visualEl.appendChild(hole);
             }
 
@@ -380,15 +434,17 @@
             currentPlaying = null;
             document.querySelectorAll('.note-diagram.active').forEach(el => el.classList.remove('active'));
         }
-function transposeUp(note) {
-    const match = note.match(/^([A-G]#?)(\d)$/);
-    if (!match) return note;
+        
+        function transposeUp(note) {
+            const match = note.match(/^([A-G]#?)(\d)$/);
+            if (!match) return note;
 
-    const pitch = match[1];
-    const octave = parseInt(match[2]);
+            const pitch = match[1];
+            const octave = parseInt(match[2]);
 
-    return pitch + (octave + 1);
-}
+            return pitch + (octave + 1);
+        }
+
         async function playSound(noteId, diagramEl) {
             const ok = await ensureAudioReady();
             if (!ok) return;
@@ -397,7 +453,7 @@ function transposeUp(note) {
 
             const transposedNote = transposeUp(noteId);
 
-currentPlaying = instrument.play(transposedNote, ac.currentTime, {
+            currentPlaying = instrument.play(transposedNote, ac.currentTime, {
                 gain: 1,
                 duration: 1.5
             });
