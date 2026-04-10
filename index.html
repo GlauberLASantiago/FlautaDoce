@@ -171,7 +171,6 @@
             color: #fff;
         }
 
-        /* Estilos do Fader de Reverb */
         .fader-container {
             display: flex;
             align-items: center;
@@ -237,7 +236,6 @@
         .recorder-wrapper {
             width: 100%;
             background: #111;
-            /* Padding inferior aumentado (28px) para o texto de status caber sem brigar com a scrollbar */
             padding: 8px 8px 28px 8px;
             border-radius: 10px;
             border: 3px solid #333;
@@ -249,9 +247,9 @@
         .diagram-container {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end; /* Alinha na base para criar o efeito degrau */
+            align-items: flex-end;
             width: 100%;
-            height: clamp(140px, 35vh, 200px); /* Aumentado para acomodar o deslocamento */
+            height: clamp(140px, 35vh, 200px);
             overflow-x: auto;
             overflow-y: hidden;
             padding: 40px 6px 15px 20px;
@@ -261,21 +259,10 @@
             scrollbar-color: #aa00ff #1a1a1a;
         }
 
-        /* Estilização da barra de rolagem (Webkit) */
-        .diagram-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        .diagram-container::-webkit-scrollbar-track {
-            background: #1a1a1a;
-            border-radius: 4px;
-        }
-        .diagram-container::-webkit-scrollbar-thumb {
-            background: #6200ea;
-            border-radius: 4px;
-        }
-        .diagram-container::-webkit-scrollbar-thumb:hover {
-            background: #aa00ff;
-        }
+        .diagram-container::-webkit-scrollbar { height: 8px; }
+        .diagram-container::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
+        .diagram-container::-webkit-scrollbar-thumb { background: #6200ea; border-radius: 4px; }
+        .diagram-container::-webkit-scrollbar-thumb:hover { background: #aa00ff; }
 
         .note-diagram {
             display: flex;
@@ -288,30 +275,15 @@
             position: relative;
             z-index: 1;
             min-width: 44px;
-            transform: translateY(0px); /* Posição base notas diatonicas */
+            transform: translateY(0px);
         }
 
-        .note-diagram:hover {
-            transform: translateY(-3px);
-        }
+        .note-diagram:hover { transform: translateY(-3px); }
+        .note-diagram.active { transform: translateY(2px); }
 
-        .note-diagram.active {
-            transform: translateY(2px);
-        }
-
-        /* Classes específicas para as Notas Cromáticas (sustenidos) */
-        .note-diagram.chromatic {
-            transform: translateY(-30px);
-            z-index: 2; /* Sobrepor vizinhos se necessário */
-        }
-
-        .note-diagram.chromatic:hover {
-            transform: translateY(-33px);
-        }
-
-        .note-diagram.chromatic.active {
-            transform: translateY(-28px);
-        }
+        .note-diagram.chromatic { transform: translateY(-30px); z-index: 2; }
+        .note-diagram.chromatic:hover { transform: translateY(-33px); }
+        .note-diagram.chromatic.active { transform: translateY(-28px); }
 
         .note-label {
             font-family: 'Anton', sans-serif;
@@ -324,10 +296,7 @@
             transition: opacity 0.3s ease;
         }
 
-        .hide-labels .note-label {
-            opacity: 0;
-            pointer-events: none;
-        }
+        .hide-labels .note-label { opacity: 0; pointer-events: none; }
 
         .note-diagram.chromatic .note-label {
             color: #ff99ff;
@@ -353,63 +322,18 @@
             transition: background 0.1s, border-color 0.1s, box-shadow 0.1s;
         }
 
-        .hole.closed {
-            background: #fff;
-            border-color: #fff;
-        }
+        .hole.closed { background: #fff; border-color: #fff; }
+        .hole.front.half { background: linear-gradient(to right, #fff 50%, transparent 50%); border-color: #fff; }
+        .hole.thumb { position: absolute; left: -7px; top: 2px; border-color: #ff00ff; }
+        .hole.thumb.closed { background: #ff00ff; border-color: #ff00ff; }
+        .hole.thumb.half { background: linear-gradient(to right, #ff00ff 50%, transparent 50%); border-color: #ff00ff; }
 
-        .hole.front.half {
-            background: linear-gradient(to right, #fff 50%, transparent 50%);
-            border-color: #fff;
-        }
-
-        .hole.thumb {
-            position: absolute;
-            left: -7px;
-            top: 2px;
-            border-color: #ff00ff;
-        }
-
-        .hole.thumb.closed {
-            background: #ff00ff;
-            border-color: #ff00ff;
-        }
-
-        .hole.thumb.half {
-            background: linear-gradient(to right, #ff00ff 50%, transparent 50%);
-            border-color: #ff00ff;
-        }
-
-        .note-diagram.active .hole.closed {
-            background: #00ffff;
-            border-color: #00ffff;
-            box-shadow: 0 0 10px rgba(0,255,255,0.8);
-        }
-        
-        .note-diagram.active .hole.front.half {
-            background: linear-gradient(to right, #00ffff 50%, transparent 50%);
-            border-color: #00ffff;
-            box-shadow: 0 0 10px rgba(0,255,255,0.8);
-        }
-
-        .note-diagram.active .hole.thumb.closed,
-        .note-diagram.active .hole.thumb.half {
-            border-color: #ff00ff;
-            box-shadow: 0 0 10px rgba(255,0,255,0.8);
-        }
-
-        .note-diagram.active .hole.thumb.closed {
-            background: #ff00ff;
-        }
-
-        .note-diagram.active .hole.thumb.half {
-            background: linear-gradient(to right, #ff00ff 50%, transparent 50%);
-        }
-
-        .note-diagram.active .note-label {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0,255,255,0.8);
-        }
+        .note-diagram.active .hole.closed { background: #00ffff; border-color: #00ffff; box-shadow: 0 0 10px rgba(0,255,255,0.8); }
+        .note-diagram.active .hole.front.half { background: linear-gradient(to right, #00ffff 50%, transparent 50%); border-color: #00ffff; box-shadow: 0 0 10px rgba(0,255,255,0.8); }
+        .note-diagram.active .hole.thumb.closed, .note-diagram.active .hole.thumb.half { border-color: #ff00ff; box-shadow: 0 0 10px rgba(255,0,255,0.8); }
+        .note-diagram.active .hole.thumb.closed { background: #ff00ff; }
+        .note-diagram.active .hole.thumb.half { background: linear-gradient(to right, #ff00ff 50%, transparent 50%); }
+        .note-diagram.active .note-label { color: #fff; text-shadow: 0 0 10px rgba(0,255,255,0.8); }
 
         .audio-status {
             position: absolute;
@@ -428,22 +352,10 @@
                 height: clamp(140px, 35vh, 180px);
                 padding-top: 35px;
             }
-
-            .note-diagram.chromatic {
-                transform: translateY(-20px);
-            }
-
-            .note-diagram.chromatic:hover {
-                transform: translateY(-23px);
-            }
-
-            .note-diagram.chromatic.active {
-                transform: translateY(-18px);
-            }
-
-            .note-label {
-                font-size: 0.9rem;
-            }
+            .note-diagram.chromatic { transform: translateY(-20px); }
+            .note-diagram.chromatic:hover { transform: translateY(-23px); }
+            .note-diagram.chromatic.active { transform: translateY(-18px); }
+            .note-label { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -480,86 +392,178 @@
     </div>
 
     <script>
-        // Array de dedilhados relativos base (0 = nota mais grave da flauta, todos furos fechados)
         const baseFingerings = [
-            { T: 1, F: '1111111', c: false }, // 0
-            { T: 1, F: '111111H', c: true },  // 1
-            { T: 1, F: '1111110', c: false }, // 2
-            { T: 1, F: '11111H0', c: true },  // 3
-            { T: 1, F: '1111100', c: false }, // 4
-            { T: 1, F: '1111011', c: false }, // 5 
-            { T: 1, F: '1111010', c: true },  // 6 
-            { T: 1, F: '1110000', c: false }, // 7 
-            { T: 1, F: '1110110', c: true },  // 8 
-            { T: 1, F: '1100000', c: false }, // 9 
-            { T: 1, F: '1011000', c: true },  // 10 
-            { T: 1, F: '1000000', c: false }, // 11 
-            { T: 1, F: '0100000', c: false }, // 12 (Oitava)
-            { T: 0, F: '1100000', c: true },  // 13 
-            { T: 0, F: '0100000', c: false }, // 14 
-            { T: 0, F: '0111110', c: true },  // 15 
-            { T: 0.5, F: '1111100', c: false }, // 16 
-            { T: 0.5, F: '1111010', c: false }, // 17 
-            { T: 0.5, F: '1110100', c: true },  // 18 
-            { T: 0.5, F: '1110000', c: false }, // 19 
-            { T: 0.5, F: '1110110', c: true },  // 20 
-            { T: 0.5, F: '1100000', c: false }, // 21 
-            { T: 0.5, F: '1101100', c: true },  // 22 
-            { T: 0.5, F: '1100100', c: false }, // 23 
-            { T: 0.5, F: '1101000', c: false }  // 24 
+            { T: 1,   F: '1111111', c: false },
+            { T: 1,   F: '111111H', c: true  },
+            { T: 1,   F: '1111110', c: false },
+            { T: 1,   F: '11111H0', c: true  },
+            { T: 1,   F: '1111100', c: false },
+            { T: 1,   F: '1111011', c: false },
+            { T: 1,   F: '1111010', c: true  },
+            { T: 1,   F: '1110000', c: false },
+            { T: 1,   F: '1110110', c: true  },
+            { T: 1,   F: '1100000', c: false },
+            { T: 1,   F: '1011000', c: true  },
+            { T: 1,   F: '1000000', c: false },
+            { T: 1,   F: '0100000', c: false },
+            { T: 0,   F: '1100000', c: true  },
+            { T: 0,   F: '0100000', c: false },
+            { T: 0,   F: '0111110', c: true  },
+            { T: 0.5, F: '1111100', c: false },
+            { T: 0.5, F: '1111010', c: false },
+            { T: 0.5, F: '1110100', c: true  },
+            { T: 0.5, F: '1110000', c: false },
+            { T: 0.5, F: '1110110', c: true  },
+            { T: 0.5, F: '1100000', c: false },
+            { T: 0.5, F: '1101100', c: true  },
+            { T: 0.5, F: '1100100', c: false },
+            { T: 0.5, F: '1101000', c: false }
         ];
 
-        const noteNamesBr = ['Dó', 'Dó#', 'Ré', 'Ré#', 'Mi', 'Fá', 'Fá#', 'Sol', 'Sol#', 'Lá', 'Lá#', 'Si'];
-        const noteNamesEn = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const noteNamesBr = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si'];
+        const noteNamesEn = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
-        // Configurações de transposição para gerar nomes e oitavas de reprodução de acordo com o instrumento
         const instrumentsConfig = {
-            soprano: { 
-                startNoteIndex: 0, // Inicia no Dó
-                startOctave: 4,    // Dó 4 visualmente
-                playbackOctaveOffset: 1 // Soa uma oitava acima (Dó 5)
-            },
-            alto: { 
-                startNoteIndex: 5, // Inicia no Fá
-                startOctave: 4,    // Fá 4 visualmente
-                playbackOctaveOffset: 0 // Soa no tom exato (Fá 4)
-            },
-            tenor: { 
-                startNoteIndex: 0, // Inicia no Dó
-                startOctave: 3,    // Dó 3 visualmente
-                playbackOctaveOffset: 1 // Soa na oitava Dó 4
-            }
+            soprano: { startNoteIndex: 0,  startOctave: 4, playbackOctaveOffset: 1 },
+            alto:    { startNoteIndex: 5,  startOctave: 4, playbackOctaveOffset: 0 },
+            tenor:   { startNoteIndex: 0,  startOctave: 3, playbackOctaveOffset: 1 }
         };
 
         const diagramContainer = document.getElementById('recorder-diagrams');
-        const statusEl = document.getElementById('audio-status');
+        const statusEl         = document.getElementById('audio-status');
         const instrumentSelect = document.getElementById('instrument-select');
-        const toggleLabelsBtn = document.getElementById('toggle-labels-btn');
-        const reverbFader = document.getElementById('reverb-fader');
+        const toggleLabelsBtn  = document.getElementById('toggle-labels-btn');
+        const reverbFader      = document.getElementById('reverb-fader');
 
-        let ac = null;
-        let instrument = null;
-        let currentPlaying = null;
-        let isInitializing = false;
+        let ac              = null;
+        let instrument      = null;
+        let currentPlaying  = null;
+        let isInitializing  = false;
 
-        // Nós de Áudio para o Reverb
-        let inputNode = null;
-        let reverbGainNode = null;
+        // Nós de áudio
+        let dryGain    = null;
+        let reverbGain = null;
+
+        function createReverbBuffer(audioContext, duration, decay) {
+            const sampleRate = audioContext.sampleRate;
+            const length     = sampleRate * duration;
+            const impulse    = audioContext.createBuffer(2, length, sampleRate);
+            for (let ch = 0; ch < 2; ch++) {
+                const data = impulse.getChannelData(ch);
+                for (let i = 0; i < length; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+                }
+            }
+            return impulse;
+        }
+
+        async function initAudio() {
+            if (instrument || isInitializing) return;
+            isInitializing = true;
+            statusEl.textContent = 'a carregar áudio...';
+
+            try {
+                ac = new (window.AudioContext || window.webkitAudioContext)();
+                if (ac.state === 'suspended') await ac.resume();
+
+                // ── Grafo de áudio ──────────────────────────────────────────
+                // soundfont-player conecta cada nota diretamente ao
+                // ac.destination internamente. Para inserir reverb ANTES
+                // do destination, substituímos ac.destination por um
+                // GainNode intermediário usando a técnica de "monkey-patch".
+                //
+                // Fluxo:  instrumento → masterGain → [dry, convolver]
+                //                                       ↓          ↓
+                //                                   dryGain    reverbGain
+                //                                       ↓          ↓
+                //                                  ac.destination (real)
+                // ────────────────────────────────────────────────────────────
+
+                const masterGain  = ac.createGain();
+                const convolver   = ac.createConvolver();
+                dryGain           = ac.createGain();
+                reverbGain        = ac.createGain();
+
+                convolver.buffer  = createReverbBuffer(ac, 2.5, 2.0);
+
+                masterGain.connect(dryGain);
+                masterGain.connect(convolver);
+                convolver.connect(reverbGain);
+                dryGain.connect(ac.destination);
+                reverbGain.connect(ac.destination);
+
+                dryGain.gain.value   = 1.0;
+                reverbGain.gain.value = parseFloat(reverbFader.value);
+
+                // Substituir o destination que a biblioteca vai usar
+                // A Soundfont.instrument aceita um audioContext customizado.
+                // A forma mais simples e robusta é criar um AudioContext
+                // "fake" que redireciona o destination para o nosso masterGain.
+                const fakeAc = new Proxy(ac, {
+                    get(target, prop) {
+                        if (prop === 'destination') return masterGain;
+                        const val = target[prop];
+                        return typeof val === 'function' ? val.bind(target) : val;
+                    }
+                });
+
+                instrument = await Soundfont.instrument(fakeAc, 'recorder');
+                statusEl.textContent = 'áudio pronto';
+            } catch (err) {
+                console.error('Erro no áudio:', err);
+                statusEl.textContent = 'áudio bloqueado';
+            } finally {
+                isInitializing = false;
+            }
+        }
+
+        async function ensureAudioReady() {
+            if (!instrument) await initAudio();
+            if (ac && ac.state === 'suspended') await ac.resume();
+            return !!instrument;
+        }
+
+        function stopAllSounds() {
+            if (currentPlaying && typeof currentPlaying.stop === 'function') {
+                try { currentPlaying.stop(); } catch (e) {}
+            }
+            currentPlaying = null;
+            document.querySelectorAll('.note-diagram.active').forEach(el => el.classList.remove('active'));
+        }
+
+        async function playSound(playbackNote, diagramEl) {
+            const ok = await ensureAudioReady();
+            if (!ok) return;
+
+            stopAllSounds();
+
+            // Sem passar "destination" — a biblioteca já usa o fakeAc.destination (masterGain)
+            currentPlaying = instrument.play(playbackNote, ac.currentTime, {
+                gain: 1,
+                duration: 1.5
+            });
+
+            if (diagramEl) diagramEl.classList.add('active');
+            statusEl.textContent = 'a tocar';
+        }
+
+        function stopSound(diagramEl) {
+            stopAllSounds();
+            if (diagramEl) diagramEl.classList.remove('active');
+            statusEl.textContent = instrument ? 'áudio pronto' : 'toque para ouvir';
+        }
 
         function renderFlute(instrumentKey) {
             stopAllSounds();
-            diagramContainer.innerHTML = ''; 
+            diagramContainer.innerHTML = '';
             const config = instrumentsConfig[instrumentKey];
 
             baseFingerings.forEach((data, index) => {
-                // Cálculo matemático perfeito para transpor escalas
-                const noteIndex = (config.startNoteIndex + index) % 12;
-                const octaveShift = Math.floor((config.startNoteIndex + index) / 12);
-                
-                const writtenOctave = config.startOctave + octaveShift;
+                const noteIndex    = (config.startNoteIndex + index) % 12;
+                const octaveShift  = Math.floor((config.startNoteIndex + index) / 12);
+                const writtenOctave  = config.startOctave + octaveShift;
                 const playbackOctave = writtenOctave + config.playbackOctaveOffset;
-
-                const labelText = `${noteNamesBr[noteIndex]} ${writtenOctave}`;
+                const labelText    = `${noteNamesBr[noteIndex]} ${writtenOctave}`;
                 const playbackNote = `${noteNamesEn[noteIndex]}${playbackOctave}`;
 
                 const noteEl = document.createElement('div');
@@ -577,175 +581,48 @@
 
                 const thumbHole = document.createElement('div');
                 thumbHole.classList.add('hole', 'thumb');
-                if (data.T === 1) thumbHole.classList.add('closed');
+                if (data.T === 1)   thumbHole.classList.add('closed');
                 else if (data.T === 0.5) thumbHole.classList.add('half');
                 visualEl.appendChild(thumbHole);
 
                 for (let i = 0; i < 7; i++) {
                     const hole = document.createElement('div');
                     hole.classList.add('hole', 'front');
-                    if (data.F[i] === '1') {
-                        hole.classList.add('closed');
-                    } else if (data.F[i] === 'H') {
-                        hole.classList.add('half');
-                    }
+                    if (data.F[i] === '1')      hole.classList.add('closed');
+                    else if (data.F[i] === 'H') hole.classList.add('half');
                     visualEl.appendChild(hole);
                 }
 
                 noteEl.appendChild(visualEl);
                 diagramContainer.appendChild(noteEl);
 
-                // Eventos de Toque
                 noteEl.addEventListener('pointerdown', async (e) => {
                     e.preventDefault();
                     await playSound(playbackNote, noteEl);
                 });
-
-                noteEl.addEventListener('pointerup', (e) => {
-                    e.preventDefault();
-                    stopSound(noteEl);
-                });
-
-                noteEl.addEventListener('pointerleave', () => {
-                    stopSound(noteEl);
-                });
-
-                noteEl.addEventListener('pointercancel', () => {
-                    stopSound(noteEl);
-                });
+                noteEl.addEventListener('pointerup',     (e) => { e.preventDefault(); stopSound(noteEl); });
+                noteEl.addEventListener('pointerleave',  ()  => stopSound(noteEl));
+                noteEl.addEventListener('pointercancel', ()  => stopSound(noteEl));
             });
-        }
-
-        // Função para criar uma resposta a impulsos sintética (simula o som a ressaltar numa sala)
-        function createReverbBuffer(audioContext, duration, decay) {
-            const sampleRate = audioContext.sampleRate;
-            const length = sampleRate * duration;
-            const impulse = audioContext.createBuffer(2, length, sampleRate);
-            const impulseL = impulse.getChannelData(0);
-            const impulseR = impulse.getChannelData(1);
-
-            for (let i = 0; i < length; i++) {
-                const n = i === 0 ? 1 : i;
-                impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
-                impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
-            }
-            return impulse;
-        }
-
-        async function initAudio() {
-            if (instrument || isInitializing) return;
-            isInitializing = true;
-            statusEl.textContent = 'a carregar áudio...';
-
-            try {
-                ac = new (window.AudioContext || window.webkitAudioContext)();
-
-                if (ac.state === 'suspended') {
-                    await ac.resume();
-                }
-
-                // Configurar o roteamento de áudio com Reverb
-                if (!inputNode) {
-                    inputNode = ac.createGain();
-                    const reverbNode = ac.createConvolver();
-                    reverbGainNode = ac.createGain();
-                    const dryGainNode = ac.createGain();
-
-                    // Gerar o Reverb
-                    reverbNode.buffer = createReverbBuffer(ac, 2.5, 2.0);
-
-                    // Ligações: Input -> [Dry, Reverb] -> Destination
-                    inputNode.connect(dryGainNode);
-                    inputNode.connect(reverbNode);
-                    reverbNode.connect(reverbGainNode);
-                    dryGainNode.connect(ac.destination);
-                    reverbGainNode.connect(ac.destination);
-
-                    dryGainNode.gain.value = 1.0;
-                    reverbGainNode.gain.value = parseFloat(reverbFader.value);
-                }
-
-                instrument = await Soundfont.instrument(ac, 'recorder');
-                statusEl.textContent = 'áudio pronto';
-            } catch (err) {
-                console.error('Erro no áudio:', err);
-                statusEl.textContent = 'áudio bloqueado';
-            } finally {
-                isInitializing = false;
-            }
-        }
-
-        async function ensureAudioReady() {
-            if (!instrument) {
-                await initAudio();
-            }
-            if (ac && ac.state === 'suspended') {
-                await ac.resume();
-            }
-            return !!instrument;
-        }
-
-        function stopAllSounds() {
-            if (currentPlaying && typeof currentPlaying.stop === 'function') {
-                try {
-                    currentPlaying.stop();
-                } catch (e) {
-                    console.warn('Erro ao parar nota:', e);
-                }
-            }
-            currentPlaying = null;
-            document.querySelectorAll('.note-diagram.active').forEach(el => el.classList.remove('active'));
-        }
-
-        async function playSound(playbackNote, diagramEl) {
-            const ok = await ensureAudioReady();
-            if (!ok) return;
-
-            stopAllSounds();
-
-            currentPlaying = instrument.play(playbackNote, ac.currentTime, {
-                gain: 1,
-                duration: 1.5,
-                destination: inputNode // O som vai passar pelo nosso sistema de reverb
-            });
-
-            if (diagramEl) diagramEl.classList.add('active');
-            statusEl.textContent = 'a tocar';
-        }
-
-        function stopSound(diagramEl) {
-            stopAllSounds();
-            if (diagramEl) diagramEl.classList.remove('active');
-            statusEl.textContent = instrument ? 'áudio pronto' : 'toque para ouvir';
         }
 
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) stopAllSounds();
         });
 
-        instrumentSelect.addEventListener('change', (e) => {
-            renderFlute(e.target.value);
-        });
+        instrumentSelect.addEventListener('change', (e) => renderFlute(e.target.value));
 
         reverbFader.addEventListener('input', (e) => {
-            if (reverbGainNode) {
-                reverbGainNode.gain.value = parseFloat(e.target.value);
-            }
+            if (reverbGain) reverbGain.gain.value = parseFloat(e.target.value);
         });
 
         let labelsVisible = true;
         toggleLabelsBtn.addEventListener('click', () => {
             labelsVisible = !labelsVisible;
-            if (labelsVisible) {
-                diagramContainer.classList.remove('hide-labels');
-                toggleLabelsBtn.textContent = 'Ocultar Notas';
-            } else {
-                diagramContainer.classList.add('hide-labels');
-                toggleLabelsBtn.textContent = 'Mostrar Notas';
-            }
+            diagramContainer.classList.toggle('hide-labels', !labelsVisible);
+            toggleLabelsBtn.textContent = labelsVisible ? 'Ocultar Notas' : 'Mostrar Notas';
         });
 
-        // Inicializa com Soprano
         renderFlute('soprano');
     </script>
 </body>
