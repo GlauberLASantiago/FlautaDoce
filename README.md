@@ -2,6 +2,9 @@
 
 Este é um aplicativo web interativo projetado para o ensino e prática da **Flauta Doce** (Soprano, Contralto e Tenor). O projeto foca em acessibilidade e gamificação, permitindo que alunos explorem dedilhados de forma visual e testem seus conhecimentos através de um módulo de treinamento com feedback sonoro em tempo real.
 
+<img width="1460" height="571" alt="image" src="https://github.com/user-attachments/assets/717832b4-c7cf-44cf-94a4-e3479f18f5ea" />
+
+
 ## 🚀 Funcionalidades
 
 - **Múltiplos Instrumentos:** Suporte para Flauta Soprano, Contralto (F) e Tenor.
