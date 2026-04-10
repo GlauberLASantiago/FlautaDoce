@@ -173,7 +173,8 @@
         .recorder-wrapper {
             width: 100%;
             background: #111;
-            padding: 8px;
+            /* Padding inferior aumentado (28px) para o texto de status caber sem brigar com a scrollbar */
+            padding: 8px 8px 28px 8px;
             border-radius: 10px;
             border: 3px solid #333;
             box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 20px rgba(255,0,255,0.3);
@@ -193,6 +194,23 @@
             gap: 2px;
             touch-action: manipulation;
             scrollbar-width: thin;
+            scrollbar-color: #aa00ff #1a1a1a;
+        }
+
+        /* Estilização da barra de rolagem (Webkit) */
+        .diagram-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .diagram-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+        .diagram-container::-webkit-scrollbar-thumb {
+            background: #6200ea;
+            border-radius: 4px;
+        }
+        .diagram-container::-webkit-scrollbar-thumb:hover {
+            background: #aa00ff;
         }
 
         .note-diagram {
@@ -331,8 +349,8 @@
 
         .audio-status {
             position: absolute;
-            right: 10px;
-            bottom: 8px;
+            right: 15px;
+            bottom: 6px; /* Ajustado para ficar perfeitamente no novo espaço inferior */
             font-size: 0.72rem;
             opacity: 0.75;
             z-index: 30;
