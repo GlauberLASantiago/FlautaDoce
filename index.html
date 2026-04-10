@@ -1,629 +1,755 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Flauta Doce - Profa. Isamara Carvalho</title>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flauta Doce - Profa. Isamara Carvalho</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:'Montserrat',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#4a0082 0%,#1a0033 50%,#05000a 100%);color:white;position:relative}
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+.bg-glow{position:absolute;inset:0;background-image:radial-gradient(2px 2px at 20px 30px,#ff00ff,rgba(0,0,0,0)),radial-gradient(2px 2px at 40px 70px,#ffffff,rgba(0,0,0,0)),radial-gradient(3px 3px at 90px 40px,#ffcc00,rgba(0,0,0,0)),radial-gradient(2px 2px at 160px 120px,#00ffff,rgba(0,0,0,0));background-repeat:repeat;background-size:200px 200px;opacity:.6;z-index:0;pointer-events:none}
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+.main-container{z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-width:1100px;padding:5px}
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at 50% 30%, #4a0082 0%, #1a0033 50%, #05000a 100%);
-            color: white;
-            position: relative;
-        }
+/* HEADER */
+.header{text-align:center;margin-bottom:8px;animation:float 4s ease-in-out infinite}
+.title-group{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.title{font-family:'Anton',sans-serif;font-size:clamp(1.8rem,5vw,3rem);line-height:1;white-space:nowrap;text-transform:uppercase;background:linear-gradient(to bottom,#fff8b0 0%,#ffd000 40%,#ff8800 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:1.5px #4a00e0;filter:drop-shadow(0 0 8px rgba(255,0,255,.8)) drop-shadow(2px 2px 0 #310066);margin-bottom:2px}
+.prof-name{font-size:clamp(.6rem,1.5vw,.85rem);font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(to right,#6200ea,#aa00ff);padding:4px 12px;border-radius:50px;border:1px solid #e0b0ff;box-shadow:0 0 10px rgba(170,0,255,.6);white-space:nowrap}
 
-        .background-glow {
-            position: absolute;
-            inset: 0;
-            background-image:
-                radial-gradient(2px 2px at 20px 30px, #ff00ff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
-                radial-gradient(3px 3px at 90px 40px, #ffcc00, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 160px 120px, #00ffff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 200px 200px;
-            opacity: 0.6;
-            z-index: 0;
-            pointer-events: none;
-        }
+/* CONTROLS */
+.controls-wrapper{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;width:100%;margin-bottom:10px;z-index:10}
+.instrument-select,.control-btn,.mode-btn{background:rgba(17,17,17,.8);color:#ffcc00;border:2px solid #aa00ff;padding:7px 18px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.85rem;border-radius:20px;outline:none;cursor:pointer;box-shadow:0 0 10px rgba(170,0,255,.4);text-transform:uppercase;letter-spacing:1px;transition:all .2s}
+.instrument-select{padding-right:35px;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffcc00' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 10px center;background-size:15px;background-color:rgba(17,17,17,.8)}
+.instrument-select:hover,.control-btn:hover,.mode-btn:hover{border-color:#ff00ff;box-shadow:0 0 15px rgba(255,0,255,.8);color:#fff}
+.mode-btn.active{background:rgba(170,0,255,.3);border-color:#ff00ff;color:#fff;box-shadow:0 0 18px rgba(255,0,255,.9)}
 
-        .main-container {
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 1100px;
-            padding: 5px;
-        }
+.fader-container{display:flex;align-items:center;gap:10px;background:rgba(17,17,17,.8);border:2px solid #aa00ff;padding:7px 15px;border-radius:20px;box-shadow:0 0 10px rgba(170,0,255,.4);transition:all .2s}
+.fader-container:hover{border-color:#ff00ff;box-shadow:0 0 15px rgba(255,0,255,.8)}
+.fader-label{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.85rem;color:#ffcc00;text-transform:uppercase;letter-spacing:1px}
+input[type=range]{-webkit-appearance:none;width:80px;background:transparent}
+input[type=range]:focus{outline:none}
+input[type=range]::-webkit-slider-runnable-track{height:6px;cursor:pointer;background:#1a1a1a;border-radius:3px;border:1px solid #6200ea}
+input[type=range]::-webkit-slider-thumb{border:2px solid #ffcc00;height:16px;width:16px;border-radius:50%;background:#aa00ff;cursor:pointer;-webkit-appearance:none;margin-top:-6px;box-shadow:0 0 8px #ff00ff;transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-            animation: float 4s ease-in-out infinite;
-        }
+/* RECORDER WRAPPER */
+.recorder-wrapper{width:100%;background:#111;padding:8px 8px 28px 8px;border-radius:10px;border:3px solid #333;box-shadow:0 10px 20px rgba(0,0,0,.8),0 0 20px rgba(255,0,255,.3);position:relative;overflow:hidden}
 
-        .title-group {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+/* DIAGRAM */
+.diagram-container{display:flex;justify-content:space-between;align-items:flex-end;width:100%;height:clamp(140px,35vh,200px);overflow-x:auto;overflow-y:hidden;padding:40px 6px 15px 20px;gap:2px;touch-action:manipulation;scrollbar-width:thin;scrollbar-color:#aa00ff #1a1a1a}
+.diagram-container::-webkit-scrollbar{height:8px}
+.diagram-container::-webkit-scrollbar-track{background:#1a1a1a;border-radius:4px}
+.diagram-container::-webkit-scrollbar-thumb{background:#6200ea;border-radius:4px}
+.diagram-container::-webkit-scrollbar-thumb:hover{background:#aa00ff}
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
-            100% { transform: translateY(0px); }
-        }
+.note-diagram{display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .1s;margin:0 3px;flex-shrink:0;position:relative;z-index:1;min-width:44px;transform:translateY(0)}
+.note-diagram:hover{transform:translateY(-3px)}
+.note-diagram.active{transform:translateY(2px)}
+.note-diagram.chromatic{transform:translateY(-30px);z-index:2}
+.note-diagram.chromatic:hover{transform:translateY(-33px)}
+.note-diagram.chromatic.active{transform:translateY(-28px)}
 
-        .title {
-            font-family: 'Anton', sans-serif;
-            font-size: clamp(1.8rem, 5vw, 3rem);
-            line-height: 1;
-            white-space: nowrap;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff8b0 0%, #ffd000 40%, #ff8800 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            -webkit-text-stroke: 1.5px #4a00e0;
-            filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.8)) drop-shadow(2px 2px 0px #310066);
-            margin-bottom: 2px;
-        }
+.note-label{font-family:'Anton',sans-serif;font-size:1rem;color:#ffcc00;text-transform:uppercase;margin-bottom:5px;text-shadow:0 0 5px rgba(255,204,0,.7);white-space:nowrap;transition:opacity .3s ease}
+.hide-labels .note-label{opacity:0;pointer-events:none}
+.note-diagram.chromatic .note-label{color:#ff99ff;font-size:.9rem;text-shadow:0 0 5px rgba(255,153,255,.7)}
 
-        .prof-name {
-            font-size: clamp(0.6rem, 1.5vw, 0.85rem);
-            font-weight: 800;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: linear-gradient(to right, #6200ea, #aa00ff);
-            padding: 4px 12px;
-            border-radius: 50px;
-            border: 1px solid #e0b0ff;
-            box-shadow: 0 0 10px rgba(170, 0, 255, 0.6);
-            white-space: nowrap;
-        }
+.recorder-visual{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;padding-left:8px}
+.hole{width:10px;height:10px;border-radius:50%;border:2px solid #aaa;background:transparent;transition:background .1s,border-color .1s,box-shadow .1s}
+.hole.closed{background:#fff;border-color:#fff}
+.hole.front.half{background:linear-gradient(to right,#fff 50%,transparent 50%);border-color:#fff}
+.hole.thumb{position:absolute;left:-7px;top:2px;border-color:#ff00ff}
+.hole.thumb.closed{background:#ff00ff;border-color:#ff00ff}
+.hole.thumb.half{background:linear-gradient(to right,#ff00ff 50%,transparent 50%);border-color:#ff00ff}
 
-        .controls-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            width: 100%;
-            margin-bottom: 15px;
-            z-index: 10;
-        }
+.note-diagram.active .hole.closed{background:#00ffff;border-color:#00ffff;box-shadow:0 0 10px rgba(0,255,255,.8)}
+.note-diagram.active .hole.front.half{background:linear-gradient(to right,#00ffff 50%,transparent 50%);border-color:#00ffff;box-shadow:0 0 10px rgba(0,255,255,.8)}
+.note-diagram.active .hole.thumb.closed,.note-diagram.active .hole.thumb.half{border-color:#ff00ff;box-shadow:0 0 10px rgba(255,0,255,.8)}
+.note-diagram.active .hole.thumb.closed{background:#ff00ff}
+.note-diagram.active .hole.thumb.half{background:linear-gradient(to right,#ff00ff 50%,transparent 50%)}
+.note-diagram.active .note-label{color:#fff;text-shadow:0 0 10px rgba(0,255,255,.8)}
 
-        .instrument-select {
-            background: rgba(17, 17, 17, 0.8);
-            color: #ffcc00;
-            border: 2px solid #aa00ff;
-            padding: 8px 35px 8px 15px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 0.9rem;
-            border-radius: 20px;
-            outline: none;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(170, 0, 255, 0.4);
-            appearance: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffcc00' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 15px;
-            transition: all 0.2s;
-        }
+/* Feedback visual no treinamento */
+.note-diagram.correct-answer{animation:correctPulse .6s ease forwards}
+.note-diagram.wrong-answer{animation:wrongPulse .5s ease forwards}
+@keyframes correctPulse{0%{filter:none}30%{filter:drop-shadow(0 0 18px #00ff88) brightness(1.8)}100%{filter:none}}
+.note-diagram.correct-answer .hole.closed{background:#00ff88!important;border-color:#00ff88!important;box-shadow:0 0 16px rgba(0,255,136,.9)!important}
+.note-diagram.correct-answer .hole.front.half{background:linear-gradient(to right,#00ff88 50%,transparent 50%)!important;border-color:#00ff88!important}
+@keyframes wrongPulse{0%,100%{transform:translateY(0) translateX(0)}20%{transform:translateY(0) translateX(-5px)}40%{transform:translateY(0) translateX(5px)}60%{transform:translateY(0) translateX(-5px)}80%{transform:translateY(0) translateX(3px)}}
+.note-diagram.chromatic.wrong-answer{animation:wrongPulseChr .5s ease forwards}
+@keyframes wrongPulseChr{0%,100%{transform:translateY(-30px) translateX(0)}20%{transform:translateY(-30px) translateX(-5px)}40%{transform:translateY(-30px) translateX(5px)}60%{transform:translateY(-30px) translateX(-5px)}80%{transform:translateY(-30px) translateX(3px)}}
+.note-diagram.wrong-answer .hole.closed{background:#ff3355!important;border-color:#ff3355!important;box-shadow:0 0 16px rgba(255,51,85,.9)!important}
 
-        .instrument-select:hover, .instrument-select:focus {
-            border-color: #ff00ff;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
-            color: #fff;
-        }
+.audio-status{position:absolute;right:15px;bottom:6px;font-size:.72rem;opacity:.75;z-index:30}
 
-        .control-btn {
-            background: rgba(17, 17, 17, 0.8);
-            color: #ffcc00;
-            border: 2px solid #aa00ff;
-            padding: 8px 20px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 0.9rem;
-            border-radius: 20px;
-            outline: none;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(170, 0, 255, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s;
-        }
+/* ── TRAINING OVERLAY ── */
+#training-panel{display:none;position:absolute;inset:0;background:rgba(0,0,0,.0);z-index:20;pointer-events:none;border-radius:8px}
+#training-panel.active{display:block}
 
-        .control-btn:hover, .control-btn:focus {
-            border-color: #ff00ff;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
-            color: #fff;
-        }
+/* Caixa de nota a adivinhar */
+.training-note-box{position:absolute;top:8px;left:12px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;pointer-events:none}
+.training-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#aa00ff;opacity:.9}
+.training-note-name{font-family:'Anton',sans-serif;font-size:2.8rem;line-height:1;color:#ffcc00;text-shadow:0 0 20px rgba(255,204,0,.8),0 0 40px rgba(255,0,255,.5);animation:notePop .3s cubic-bezier(.17,.67,.35,1.5) forwards}
+@keyframes notePop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
 
-        .fader-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(17, 17, 17, 0.8);
-            border: 2px solid #aa00ff;
-            padding: 8px 15px;
-            border-radius: 20px;
-            box-shadow: 0 0 10px rgba(170, 0, 255, 0.4);
-            transition: all 0.2s;
-        }
+/* Timer bar */
+.timer-bar-track{position:absolute;bottom:20px;left:12px;right:12px;height:5px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;pointer-events:none}
+.timer-bar-fill{height:100%;width:100%;background:linear-gradient(to right,#aa00ff,#ff00ff);border-radius:3px;transform-origin:left;transition:none}
+.timer-bar-fill.urgent{background:linear-gradient(to right,#ff3300,#ff0066)}
 
-        .fader-container:hover {
-            border-color: #ff00ff;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
-        }
+/* Placar */
+.scoreboard{display:flex;gap:12px;align-items:center;pointer-events:none}
+.score-item{display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:800;text-transform:uppercase}
+.score-num{font-family:'Anton',sans-serif;font-size:1.5rem;line-height:1}
+.score-correct .score-num{color:#00ff88;text-shadow:0 0 10px rgba(0,255,136,.6)}
+.score-wrong .score-num{color:#ff3355;text-shadow:0 0 10px rgba(255,51,85,.6)}
+.score-level{background:rgba(170,0,255,.25);border:1px solid #aa00ff;padding:4px 10px;border-radius:12px;font-size:.75rem;font-weight:800;color:#e0b0ff;letter-spacing:1px;white-space:nowrap}
 
-        .fader-label {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 0.9rem;
-            color: #ffcc00;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+/* Painel de seleção de nível */
+#level-select-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:20px}
+#level-select-panel.show{display:flex}
+.level-panel-title{font-family:'Anton',sans-serif;font-size:clamp(1.4rem,4vw,2.2rem);text-align:center;background:linear-gradient(to bottom,#fff8b0,#ffd000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:1px #4a00e0;filter:drop-shadow(0 0 8px rgba(255,0,255,.6))}
+.level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;width:100%;max-width:860px}
+.level-card{background:rgba(17,17,17,.9);border:2px solid #333;border-radius:12px;padding:14px 18px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:4px}
+.level-card:hover{border-color:#aa00ff;box-shadow:0 0 18px rgba(170,0,255,.6);transform:translateY(-2px)}
+.level-card.current{border-color:#ff00ff;box-shadow:0 0 20px rgba(255,0,255,.5)}
+.level-card-num{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#aa00ff}
+.level-card-name{font-family:'Anton',sans-serif;font-size:1.1rem;color:#ffcc00}
+.level-card-desc{font-size:.75rem;color:#ccc;line-height:1.4}
+.level-close-btn{background:rgba(17,17,17,.8);color:#ffcc00;border:2px solid #aa00ff;padding:8px 24px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.9rem;border-radius:20px;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:1px;margin-top:8px}
+.level-close-btn:hover{border-color:#ff00ff;color:#fff}
 
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 90px;
-            background: transparent;
-        }
+/* Feedback toast */
+.feedback-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.7);opacity:0;font-family:'Anton',sans-serif;font-size:clamp(2rem,8vw,4rem);pointer-events:none;z-index:200;transition:none;text-shadow:0 0 30px currentColor}
+.feedback-toast.show-correct{color:#00ff88;animation:toastAnim .7s ease forwards}
+.feedback-toast.show-wrong{color:#ff3355;animation:toastAnim .7s ease forwards}
+@keyframes toastAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}60%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
 
-        input[type=range]:focus {
-            outline: none;
-        }
+/* Resultado de fim de rodada */
+#round-result{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:150;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:20px}
+#round-result.show{display:flex}
+.result-title{font-family:'Anton',sans-serif;font-size:clamp(1.8rem,6vw,3.2rem);text-align:center;background:linear-gradient(to bottom,#fff8b0,#ffd000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:1px #4a00e0;filter:drop-shadow(0 0 10px rgba(255,0,255,.7))}
+.result-stats{display:flex;gap:30px;justify-content:center;flex-wrap:wrap}
+.result-stat{text-align:center}
+.result-stat-num{font-family:'Anton',sans-serif;font-size:2.5rem}
+.result-stat-label{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#ccc}
+.result-stat.correct .result-stat-num{color:#00ff88;text-shadow:0 0 15px rgba(0,255,136,.6)}
+.result-stat.wrong .result-stat-num{color:#ff3355;text-shadow:0 0 15px rgba(255,51,85,.6)}
+.result-stat.pct .result-stat-num{color:#ffcc00;text-shadow:0 0 15px rgba(255,204,0,.6)}
+.result-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.result-btn{background:rgba(17,17,17,.8);color:#ffcc00;border:2px solid #aa00ff;padding:10px 24px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.9rem;border-radius:20px;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:1px}
+.result-btn:hover{border-color:#ff00ff;color:#fff;box-shadow:0 0 15px rgba(255,0,255,.6)}
+.result-btn.primary{background:rgba(170,0,255,.3);border-color:#ff00ff;color:#fff}
 
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            cursor: pointer;
-            background: #1a1a1a;
-            border-radius: 3px;
-            border: 1px solid #6200ea;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            border: 2px solid #ffcc00;
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background: #aa00ff;
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -6px;
-            box-shadow: 0 0 8px #ff00ff;
-            transition: transform 0.1s;
-        }
-
-        input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        .recorder-wrapper {
-            width: 100%;
-            background: #111;
-            padding: 8px 8px 28px 8px;
-            border-radius: 10px;
-            border: 3px solid #333;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 20px rgba(255,0,255,0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .diagram-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            width: 100%;
-            height: clamp(140px, 35vh, 200px);
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 40px 6px 15px 20px;
-            gap: 2px;
-            touch-action: manipulation;
-            scrollbar-width: thin;
-            scrollbar-color: #aa00ff #1a1a1a;
-        }
-
-        .diagram-container::-webkit-scrollbar { height: 8px; }
-        .diagram-container::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
-        .diagram-container::-webkit-scrollbar-thumb { background: #6200ea; border-radius: 4px; }
-        .diagram-container::-webkit-scrollbar-thumb:hover { background: #aa00ff; }
-
-        .note-diagram {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.1s;
-            margin: 0 3px;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 1;
-            min-width: 44px;
-            transform: translateY(0px);
-        }
-
-        .note-diagram:hover { transform: translateY(-3px); }
-        .note-diagram.active { transform: translateY(2px); }
-
-        .note-diagram.chromatic { transform: translateY(-30px); z-index: 2; }
-        .note-diagram.chromatic:hover { transform: translateY(-33px); }
-        .note-diagram.chromatic.active { transform: translateY(-28px); }
-
-        .note-label {
-            font-family: 'Anton', sans-serif;
-            font-size: 1rem;
-            color: #ffcc00;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            text-shadow: 0 0 5px rgba(255,204,0,0.7);
-            white-space: nowrap;
-            transition: opacity 0.3s ease;
-        }
-
-        .hide-labels .note-label { opacity: 0; pointer-events: none; }
-
-        .note-diagram.chromatic .note-label {
-            color: #ff99ff;
-            font-size: 0.9rem;
-            text-shadow: 0 0 5px rgba(255,153,255,0.7);
-        }
-
-        .recorder-visual {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            position: relative;
-            padding-left: 8px;
-        }
-
-        .hole {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 2px solid #aaa;
-            background: transparent;
-            transition: background 0.1s, border-color 0.1s, box-shadow 0.1s;
-        }
-
-        .hole.closed { background: #fff; border-color: #fff; }
-        .hole.front.half { background: linear-gradient(to right, #fff 50%, transparent 50%); border-color: #fff; }
-        .hole.thumb { position: absolute; left: -7px; top: 2px; border-color: #ff00ff; }
-        .hole.thumb.closed { background: #ff00ff; border-color: #ff00ff; }
-        .hole.thumb.half { background: linear-gradient(to right, #ff00ff 50%, transparent 50%); border-color: #ff00ff; }
-
-        .note-diagram.active .hole.closed { background: #00ffff; border-color: #00ffff; box-shadow: 0 0 10px rgba(0,255,255,0.8); }
-        .note-diagram.active .hole.front.half { background: linear-gradient(to right, #00ffff 50%, transparent 50%); border-color: #00ffff; box-shadow: 0 0 10px rgba(0,255,255,0.8); }
-        .note-diagram.active .hole.thumb.closed, .note-diagram.active .hole.thumb.half { border-color: #ff00ff; box-shadow: 0 0 10px rgba(255,0,255,0.8); }
-        .note-diagram.active .hole.thumb.closed { background: #ff00ff; }
-        .note-diagram.active .hole.thumb.half { background: linear-gradient(to right, #ff00ff 50%, transparent 50%); }
-        .note-diagram.active .note-label { color: #fff; text-shadow: 0 0 10px rgba(0,255,255,0.8); }
-
-        .audio-status {
-            position: absolute;
-            right: 15px;
-            bottom: 6px;
-            font-size: 0.72rem;
-            opacity: 0.75;
-            z-index: 30;
-        }
-
-        @media (max-width: 700px) {
-            .diagram-container {
-                justify-content: flex-start;
-                gap: 6px;
-                padding-left: 24px;
-                height: clamp(140px, 35vh, 180px);
-                padding-top: 35px;
-            }
-            .note-diagram.chromatic { transform: translateY(-20px); }
-            .note-diagram.chromatic:hover { transform: translateY(-23px); }
-            .note-diagram.chromatic.active { transform: translateY(-18px); }
-            .note-label { font-size: 0.9rem; }
-        }
-    </style>
+@media(max-width:700px){
+  .diagram-container{justify-content:flex-start;gap:6px;padding-left:24px;height:clamp(140px,35vh,180px);padding-top:35px}
+  .note-diagram.chromatic{transform:translateY(-20px)}
+  .note-diagram.chromatic:hover{transform:translateY(-23px)}
+  .note-diagram.chromatic.active{transform:translateY(-18px)}
+  .note-diagram.chromatic.wrong-answer{animation:wrongPulseChrM .5s ease forwards}
+  @keyframes wrongPulseChrM{0%,100%{transform:translateY(-20px) translateX(0)}20%{transform:translateY(-20px) translateX(-5px)}40%{transform:translateY(-20px) translateX(5px)}60%{transform:translateY(-20px) translateX(-5px)}80%{transform:translateY(-20px) translateX(3px)}}
+  .note-label{font-size:.9rem}
+  .training-note-name{font-size:2.2rem}
+}
+</style>
 </head>
 <body>
+<div class="bg-glow"></div>
+<div class="main-container">
 
-    <div class="background-glow"></div>
+  <div class="header">
+    <div class="title-group">
+      <h1 class="title">FLAUTA DOCE</h1>
+      <span class="prof-name">Profa. Isamara Carvalho</span>
+    </div>
+  </div>
 
-    <div class="main-container">
-        <div class="header">
-            <div class="title-group">
-                <h1 class="title">FLAUTA DOCE</h1>
-                <span class="prof-name">Profa. Isamara Carvalho</span>
-            </div>
-        </div>
+  <div class="controls-wrapper">
+    <select id="instrument-select" class="instrument-select">
+      <option value="soprano">Soprano</option>
+      <option value="alto">Contralto</option>
+      <option value="tenor">Tenor</option>
+    </select>
+    <button id="mode-free-btn" class="mode-btn active">Livre</button>
+    <button id="mode-train-btn" class="mode-btn">Treino</button>
+    <button id="toggle-labels-btn" class="control-btn">Ocultar Notas</button>
+    <div class="fader-container">
+      <label for="reverb-fader" class="fader-label">Reverb</label>
+      <input type="range" id="reverb-fader" min="0" max="1" step="0.01" value="0.35">
+    </div>
+  </div>
 
-        <div class="controls-wrapper">
-            <select id="instrument-select" class="instrument-select">
-                <option value="soprano">Soprano</option>
-                <option value="alto">Contralto</option>
-                <option value="tenor">Tenor</option>
-            </select>
-            <button id="toggle-labels-btn" class="control-btn">Ocultar Notas</button>
-            
-            <div class="fader-container">
-                <label for="reverb-fader" class="fader-label">Reverb</label>
-                <input type="range" id="reverb-fader" min="0" max="1" step="0.01" value="0.35">
-            </div>
-        </div>
+  <div id="scoreboard-row" class="controls-wrapper" style="display:none;margin-bottom:6px">
+    <div class="scoreboard">
+      <div class="score-item score-correct">
+        <span>✓</span><span class="score-num" id="score-correct">0</span>
+      </div>
+      <div class="score-item score-wrong">
+        <span>✗</span><span class="score-num" id="score-wrong">0</span>
+      </div>
+      <div class="score-level" id="score-level-label">Nível 1</div>
+    </div>
+    <button id="change-level-btn" class="control-btn" style="font-size:.75rem;padding:6px 14px">Mudar Nível</button>
+    <button id="stop-training-btn" class="control-btn" style="font-size:.75rem;padding:6px 14px">Encerrar</button>
+  </div>
 
-        <div class="recorder-wrapper">
-            <div class="diagram-container" id="recorder-diagrams"></div>
-            <div class="audio-status" id="audio-status">toque para ouvir</div>
-        </div>
+  <div class="recorder-wrapper">
+    <div class="diagram-container" id="recorder-diagrams"></div>
+
+    <div id="training-panel">
+      <div class="training-note-box">
+        <span class="training-label">Qual nota é esta?</span>
+        <span class="training-note-name" id="training-note-display">—</span>
+      </div>
+      <div class="timer-bar-track">
+        <div class="timer-bar-fill" id="timer-bar"></div>
+      </div>
     </div>
 
-    <script>
-        const baseFingerings = [
-            { T: 1,   F: '1111111', c: false },
-            { T: 1,   F: '111111H', c: true  },
-            { T: 1,   F: '1111110', c: false },
-            { T: 1,   F: '11111H0', c: true  },
-            { T: 1,   F: '1111100', c: false },
-            { T: 1,   F: '1111011', c: false },
-            { T: 1,   F: '1111010', c: true  },
-            { T: 1,   F: '1110000', c: false },
-            { T: 1,   F: '1110110', c: true  },
-            { T: 1,   F: '1100000', c: false },
-            { T: 1,   F: '1011000', c: true  },
-            { T: 1,   F: '1000000', c: false },
-            { T: 1,   F: '0100000', c: false },
-            { T: 0,   F: '1100000', c: true  },
-            { T: 0,   F: '0100000', c: false },
-            { T: 0,   F: '0111110', c: true  },
-            { T: 0.5, F: '1111100', c: false },
-            { T: 0.5, F: '1111010', c: false },
-            { T: 0.5, F: '1110100', c: true  },
-            { T: 0.5, F: '1110000', c: false },
-            { T: 0.5, F: '1110110', c: true  },
-            { T: 0.5, F: '1100000', c: false },
-            { T: 0.5, F: '1101100', c: true  },
-            { T: 0.5, F: '1100100', c: false },
-            { T: 0.5, F: '1101000', c: false }
-        ];
+    <div class="audio-status" id="audio-status">toque para ouvir</div>
+  </div>
+</div>
 
-        const noteNamesBr = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si'];
-        const noteNamesEn = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+<div class="feedback-toast" id="feedback-toast"></div>
 
-        const instrumentsConfig = {
-            soprano: { startNoteIndex: 0,  startOctave: 4, playbackOctaveOffset: 1 },
-            alto:    { startNoteIndex: 5,  startOctave: 4, playbackOctaveOffset: 0 },
-            tenor:   { startNoteIndex: 0,  startOctave: 3, playbackOctaveOffset: 1 }
-        };
+<div id="level-select-panel">
+  <div class="level-panel-title">Escolha o Nível de Treino</div>
+  <div class="level-grid" id="level-grid"></div>
+  <button class="level-close-btn" id="level-close-btn">Cancelar</button>
+</div>
 
-        const diagramContainer = document.getElementById('recorder-diagrams');
-        const statusEl         = document.getElementById('audio-status');
-        const instrumentSelect = document.getElementById('instrument-select');
-        const toggleLabelsBtn  = document.getElementById('toggle-labels-btn');
-        const reverbFader      = document.getElementById('reverb-fader');
+<div id="round-result">
+  <div class="result-title" id="result-title">Rodada concluída!</div>
+  <div class="result-stats">
+    <div class="result-stat correct"><div class="result-stat-num" id="res-correct">0</div><div class="result-stat-label">Acertos</div></div>
+    <div class="result-stat wrong"><div class="result-stat-num" id="res-wrong">0</div><div class="result-stat-label">Erros</div></div>
+    <div class="result-stat pct"><div class="result-stat-num" id="res-pct">0%</div><div class="result-stat-label">Aproveitamento</div></div>
+  </div>
+  <div class="result-btns">
+    <button class="result-btn primary" id="res-retry-btn">Repetir Nível</button>
+    <button class="result-btn" id="res-next-btn">Próximo Nível</button>
+    <button class="result-btn" id="res-free-btn">Modo Livre</button>
+  </div>
+</div>
 
-        let ac              = null;
-        let instrument      = null;
-        let currentPlaying  = null;
-        let isInitializing  = false;
+<script>
+// ═══════════════════════════════════════════════════════
+// DADOS BASE
+// ═══════════════════════════════════════════════════════
+const baseFingerings = [
+  {T:1,  F:'1111111',c:false}, // 0
+  {T:1,  F:'111111H',c:true }, // 1
+  {T:1,  F:'1111110',c:false}, // 2
+  {T:1,  F:'11111H0',c:true }, // 3
+  {T:1,  F:'1111100',c:false}, // 4
+  {T:1,  F:'1111011',c:false}, // 5
+  {T:1,  F:'1111010',c:true }, // 6
+  {T:1,  F:'1110000',c:false}, // 7
+  {T:1,  F:'1110110',c:true }, // 8
+  {T:1,  F:'1100000',c:false}, // 9
+  {T:1,  F:'1011000',c:true }, // 10
+  {T:1,  F:'1000000',c:false}, // 11
+  {T:1,  F:'0100000',c:false}, // 12 — oitava
+  {T:0,  F:'1100000',c:true }, // 13
+  {T:0,  F:'0100000',c:false}, // 14
+  {T:0,  F:'0111110',c:true }, // 15
+  {T:.5, F:'1111100',c:false}, // 16
+  {T:.5, F:'1111010',c:false}, // 17
+  {T:.5, F:'1110100',c:true }, // 18
+  {T:.5, F:'1110000',c:false}, // 19
+  {T:.5, F:'1110110',c:true }, // 20
+  {T:.5, F:'1100000',c:false}, // 21
+  {T:.5, F:'1101100',c:true }, // 22
+  {T:.5, F:'1100100',c:false}, // 23
+  {T:.5, F:'1101000',c:false}, // 24
+];
 
-        // Nós de áudio
-        let dryGain    = null;
-        let reverbGain = null;
+const noteNamesBr = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si'];
+const noteNamesEn = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
-        function createReverbBuffer(audioContext, duration, decay) {
-            const sampleRate = audioContext.sampleRate;
-            const length     = sampleRate * duration;
-            const impulse    = audioContext.createBuffer(2, length, sampleRate);
-            for (let ch = 0; ch < 2; ch++) {
-                const data = impulse.getChannelData(ch);
-                for (let i = 0; i < length; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
-                }
-            }
-            return impulse;
-        }
+const instrumentsConfig = {
+  soprano:{startNoteIndex:0, startOctave:4, playbackOctaveOffset:1},
+  alto:   {startNoteIndex:5, startOctave:4, playbackOctaveOffset:0},
+  tenor:  {startNoteIndex:0, startOctave:3, playbackOctaveOffset:1}
+};
 
-        async function initAudio() {
-            if (instrument || isInitializing) return;
-            isInitializing = true;
-            statusEl.textContent = 'a carregar áudio...';
+const LEVELS = [
+  {id:1, name:'Notas Diatônicas – 1ª Oitava', desc:'Dó, Ré, Mi, Fá, Sol, Lá, Si, Dó agudo.', indices:[0,2,4,5,7,9,11,12], time:6},
+  {id:2, name:'Até Sol Agudo', desc:'Diatônicas incluindo Ré, Mi, Fá, Sol agudos.', indices:[0,2,4,5,7,9,11,12,14,16,17,19,21,23], time:6},
+  {id:3, name:'Fá# e Si♭', desc:'Acrescenta as cromáticas Fá# e Si♭.', indices:[0,2,4,5,6,7,9,10,11,12,14,16,17,19,21,23], time:6},
+  {id:4, name:'Cromáticas Graves', desc:'Cromáticas da 1ª oitava, incluindo sustenidos.', indices:[0,1,2,3,4,5,6,7,8,9,10,11,12], time:7},
+  {id:5, name:'Cromáticas até Sol Agudo', desc:'Escala cromática completa até Sol agudo.', indices:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], time:8},
+  {id:6, name:'Notas Acima de Sol Agudo', desc:'Lá agudo, Lá# agudo e Si agudo.', indices:[0,2,4,5,7,9,11,12,14,16,17,19,21,22,23,24], time:9}
+];
 
-            try {
-                ac = new (window.AudioContext || window.webkitAudioContext)();
-                if (ac.state === 'suspended') await ac.resume();
+const ROUND_SIZE = 10;
 
-                // ── Grafo de áudio ──────────────────────────────────────────
-                // soundfont-player conecta cada nota diretamente ao
-                // ac.destination internamente. Para inserir reverb ANTES
-                // do destination, substituímos ac.destination por um
-                // GainNode intermediário usando a técnica de "monkey-patch".
-                //
-                // Fluxo:  instrumento → masterGain → [dry, convolver]
-                //                                       ↓          ↓
-                //                                   dryGain    reverbGain
-                //                                       ↓          ↓
-                //                                  ac.destination (real)
-                // ────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
+// ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+let ac=null, instrument=null, currentPlaying=null, isInitializing=false;
+let sndCorrect=null, sndWrong=null; // Novos sons
+let dryGain=null, reverbGain=null;
+let appMode = 'free';
+let currentInstrument = 'soprano';
+let labelsVisible = true;
 
-                const masterGain  = ac.createGain();
-                const convolver   = ac.createConvolver();
-                dryGain           = ac.createGain();
-                reverbGain        = ac.createGain();
+let training = {
+  active: false,
+  level: LEVELS[0],
+  queue: [],
+  currentIdx: 0,
+  currentNoteEl: null,
+  correctCount: 0,
+  wrongCount: 0,
+  answered: false,
+  timerHandle: null,
+  timerBarHandle: null,
+  timerStart: 0,
+  roundCount: 0,
+};
 
-                convolver.buffer  = createReverbBuffer(ac, 2.5, 2.0);
+// ═══════════════════════════════════════════════════════
+// DOM REFS
+// ═══════════════════════════════════════════════════════
+const diagramContainer  = document.getElementById('recorder-diagrams');
+const statusEl          = document.getElementById('audio-status');
+const instrumentSelect  = document.getElementById('instrument-select');
+const toggleLabelsBtn   = document.getElementById('toggle-labels-btn');
+const reverbFader       = document.getElementById('reverb-fader');
+const modeFreeBtn       = document.getElementById('mode-free-btn');
+const modeTrainBtn      = document.getElementById('mode-train-btn');
+const scoreboardRow      = document.getElementById('scoreboard-row');
+const scoreCorrectEl    = document.getElementById('score-correct');
+const scoreWrongEl      = document.getElementById('score-wrong');
+const scoreLevelLabel   = document.getElementById('score-level-label');
+const changeLevelBtn    = document.getElementById('change-level-btn');
+const stopTrainingBtn   = document.getElementById('stop-training-btn');
+const trainingPanel     = document.getElementById('training-panel');
+const trainingNoteDisp  = document.getElementById('training-note-display');
+const timerBarEl        = document.getElementById('timer-bar');
+const feedbackToast     = document.getElementById('feedback-toast');
+const levelSelectPanel  = document.getElementById('level-select-panel');
+const levelGrid         = document.getElementById('level-grid');
+const levelCloseBtn     = document.getElementById('level-close-btn');
+const roundResultPanel  = document.getElementById('round-result');
+const resultTitle       = document.getElementById('result-title');
+const resCorrect        = document.getElementById('res-correct');
+const resWrong          = document.getElementById('res-wrong');
+const resPct            = document.getElementById('res-pct');
+const resRetryBtn       = document.getElementById('res-retry-btn');
+const resNextBtn        = document.getElementById('res-next-btn');
+const resFreeBtn        = document.getElementById('res-free-btn');
 
-                masterGain.connect(dryGain);
-                masterGain.connect(convolver);
-                convolver.connect(reverbGain);
-                dryGain.connect(ac.destination);
-                reverbGain.connect(ac.destination);
+// ═══════════════════════════════════════════════════════
+// REVERB / ÁUDIO
+// ═══════════════════════════════════════════════════════
+function createReverbBuffer(audioContext,duration,decay){
+  const sr=audioContext.sampleRate, len=sr*duration;
+  const buf=audioContext.createBuffer(2,len,sr);
+  for(let ch=0;ch<2;ch++){
+    const d=buf.getChannelData(ch);
+    for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);
+  }
+  return buf;
+}
 
-                dryGain.gain.value   = 1.0;
-                reverbGain.gain.value = parseFloat(reverbFader.value);
+async function initAudio(){
+  if(instrument||isInitializing) return;
+  isInitializing=true;
+  statusEl.textContent='a carregar áudio...';
+  try{
+    ac=new(window.AudioContext||window.webkitAudioContext)();
+    if(ac.state==='suspended') await ac.resume();
 
-                // Substituir o destination que a biblioteca vai usar
-                // A Soundfont.instrument aceita um audioContext customizado.
-                // A forma mais simples e robusta é criar um AudioContext
-                // "fake" que redireciona o destination para o nosso masterGain.
-                const fakeAc = new Proxy(ac, {
-                    get(target, prop) {
-                        if (prop === 'destination') return masterGain;
-                        const val = target[prop];
-                        return typeof val === 'function' ? val.bind(target) : val;
-                    }
-                });
+    const masterGain=ac.createGain();
+    const convolver=ac.createConvolver();
+    dryGain=ac.createGain();
+    reverbGain=ac.createGain();
+    convolver.buffer=createReverbBuffer(ac,2.5,2.0);
+    masterGain.connect(dryGain);
+    masterGain.connect(convolver);
+    convolver.connect(reverbGain);
+    dryGain.connect(ac.destination);
+    reverbGain.connect(ac.destination);
+    dryGain.gain.value=1.0;
+    reverbGain.gain.value=parseFloat(reverbFader.value);
 
-                instrument = await Soundfont.instrument(fakeAc, 'recorder');
-                statusEl.textContent = 'áudio pronto';
-            } catch (err) {
-                console.error('Erro no áudio:', err);
-                statusEl.textContent = 'áudio bloqueado';
-            } finally {
-                isInitializing = false;
-            }
-        }
+    const fakeAc=new Proxy(ac,{
+      get(t,p){
+        if(p==='destination') return masterGain;
+        const v=t[p];
+        return typeof v==='function'?v.bind(t):v;
+      }
+    });
 
-        async function ensureAudioReady() {
-            if (!instrument) await initAudio();
-            if (ac && ac.state === 'suspended') await ac.resume();
-            return !!instrument;
-        }
+    // Carregando instrumentos: Flauta, Xilofone (Acerto) e Timbal (Erro)
+    const [inst, correct, wrong] = await Promise.all([
+        Soundfont.instrument(fakeAc,'recorder'),
+        Soundfont.instrument(fakeAc,'xylophone'),
+        Soundfont.instrument(fakeAc,'timpani')
+    ]);
 
-        function stopAllSounds() {
-            if (currentPlaying && typeof currentPlaying.stop === 'function') {
-                try { currentPlaying.stop(); } catch (e) {}
-            }
-            currentPlaying = null;
-            document.querySelectorAll('.note-diagram.active').forEach(el => el.classList.remove('active'));
-        }
+    instrument = inst;
+    sndCorrect = correct;
+    sndWrong = wrong;
 
-        async function playSound(playbackNote, diagramEl) {
-            const ok = await ensureAudioReady();
-            if (!ok) return;
+    statusEl.textContent='áudio pronto';
+  }catch(err){
+    console.error(err);
+    statusEl.textContent='áudio bloqueado';
+  }finally{
+    isInitializing=false;
+  }
+}
 
-            stopAllSounds();
+async function ensureAudio(){
+  if(!instrument) await initAudio();
+  if(ac&&ac.state==='suspended') await ac.resume();
+  return !!instrument;
+}
 
-            // Sem passar "destination" — a biblioteca já usa o fakeAc.destination (masterGain)
-            currentPlaying = instrument.play(playbackNote, ac.currentTime, {
-                gain: 1,
-                duration: 1.5
-            });
+function stopAllSounds(){
+  if(currentPlaying&&typeof currentPlaying.stop==='function'){
+    try{currentPlaying.stop();}catch(e){}
+  }
+  currentPlaying=null;
+  document.querySelectorAll('.note-diagram.active').forEach(el=>el.classList.remove('active'));
+}
 
-            if (diagramEl) diagramEl.classList.add('active');
-            statusEl.textContent = 'a tocar';
-        }
+async function playNote(playbackNote, diagramEl, markActive=true){
+  const ok=await ensureAudio();
+  if(!ok) return;
+  stopAllSounds();
+  currentPlaying=instrument.play(playbackNote,ac.currentTime,{gain:1,duration:1.5});
+  if(diagramEl&&markActive) diagramEl.classList.add('active');
+  statusEl.textContent='a tocar';
+}
 
-        function stopSound(diagramEl) {
-            stopAllSounds();
-            if (diagramEl) diagramEl.classList.remove('active');
-            statusEl.textContent = instrument ? 'áudio pronto' : 'toque para ouvir';
-        }
+// ═══════════════════════════════════════════════════════
+// RENDER DA FLAUTA
+// ═══════════════════════════════════════════════════════
+function getNoteInfo(instrumentKey, fingeringIndex){
+  const config=instrumentsConfig[instrumentKey];
+  const noteIndex=(config.startNoteIndex+fingeringIndex)%12;
+  const octaveShift=Math.floor((config.startNoteIndex+fingeringIndex)/12);
+  const writtenOctave=config.startOctave+octaveShift;
+  const playbackOctave=writtenOctave+config.playbackOctaveOffset;
+  return {
+    labelBr: `${noteNamesBr[noteIndex]} ${writtenOctave}`,
+    labelBrShort: noteNamesBr[noteIndex],
+    playbackNote: `${noteNamesEn[noteIndex]}${playbackOctave}`,
+    noteIndex, writtenOctave
+  };
+}
 
-        function renderFlute(instrumentKey) {
-            stopAllSounds();
-            diagramContainer.innerHTML = '';
-            const config = instrumentsConfig[instrumentKey];
+function buildHoleEl(data){
+  const el=document.createElement('div');
+  el.classList.add('recorder-visual');
+  const thumb=document.createElement('div');
+  thumb.classList.add('hole','thumb');
+  if(data.T===1) thumb.classList.add('closed');
+  else if(data.T===0.5) thumb.classList.add('half');
+  el.appendChild(thumb);
+  for(let i=0;i<7;i++){
+    const h=document.createElement('div');
+    h.classList.add('hole','front');
+    if(data.F[i]==='1') h.classList.add('closed');
+    else if(data.F[i]==='H') h.classList.add('half');
+    el.appendChild(h);
+  }
+  return el;
+}
 
-            baseFingerings.forEach((data, index) => {
-                const noteIndex    = (config.startNoteIndex + index) % 12;
-                const octaveShift  = Math.floor((config.startNoteIndex + index) / 12);
-                const writtenOctave  = config.startOctave + octaveShift;
-                const playbackOctave = writtenOctave + config.playbackOctaveOffset;
-                const labelText    = `${noteNamesBr[noteIndex]} ${writtenOctave}`;
-                const playbackNote = `${noteNamesEn[noteIndex]}${playbackOctave}`;
+function renderFlute(instrumentKey){
+  stopAllSounds();
+  diagramContainer.innerHTML='';
+  baseFingerings.forEach((data,index)=>{
+    const info=getNoteInfo(instrumentKey,index);
+    const noteEl=document.createElement('div');
+    noteEl.classList.add('note-diagram');
+    if(data.c) noteEl.classList.add('chromatic');
+    noteEl.dataset.note=info.playbackNote;
+    noteEl.dataset.index=index;
+    noteEl.dataset.labelBr=info.labelBr;
 
-                const noteEl = document.createElement('div');
-                noteEl.classList.add('note-diagram');
-                if (data.c) noteEl.classList.add('chromatic');
-                noteEl.dataset.note = playbackNote;
+    const labelEl=document.createElement('div');
+    labelEl.classList.add('note-label');
+    labelEl.innerText=info.labelBr;
+    noteEl.appendChild(labelEl);
+    noteEl.appendChild(buildHoleEl(data));
+    diagramContainer.appendChild(noteEl);
 
-                const labelEl = document.createElement('div');
-                labelEl.classList.add('note-label');
-                labelEl.innerText = labelText;
-                noteEl.appendChild(labelEl);
+    noteEl.addEventListener('pointerdown',async(e)=>{
+      e.preventDefault();
+      if(appMode==='free'){
+        await playNote(info.playbackNote,noteEl);
+      } else {
+        await handleTrainingTap(noteEl,index);
+      }
+    });
+    noteEl.addEventListener('pointerup',(e)=>{
+      e.preventDefault();
+      if(appMode==='free'){
+        stopAllSounds();
+        noteEl.classList.remove('active');
+        statusEl.textContent=instrument?'áudio pronto':'toque para ouvir';
+      }
+    });
+    noteEl.addEventListener('pointerleave',()=>{
+      if(appMode==='free'){
+        stopAllSounds();
+        noteEl.classList.remove('active');
+      }
+    });
+  });
+}
 
-                const visualEl = document.createElement('div');
-                visualEl.classList.add('recorder-visual');
+// ═══════════════════════════════════════════════════════
+// MODO TREINAMENTO
+// ═══════════════════════════════════════════════════════
 
-                const thumbHole = document.createElement('div');
-                thumbHole.classList.add('hole', 'thumb');
-                if (data.T === 1)   thumbHole.classList.add('closed');
-                else if (data.T === 0.5) thumbHole.classList.add('half');
-                visualEl.appendChild(thumbHole);
+function showLevelSelect(){
+  levelGrid.innerHTML='';
+  LEVELS.forEach(lv=>{
+    const card=document.createElement('div');
+    card.classList.add('level-card');
+    if(training.level&&training.level.id===lv.id) card.classList.add('current');
+    card.innerHTML=`<div class="level-card-num">Nível ${lv.id}</div>
+      <div class="level-card-name">${lv.name}</div>
+      <div class="level-card-desc">${lv.desc}</div>`;
+    card.addEventListener('click',()=>startTraining(lv));
+    levelGrid.appendChild(card);
+  });
+  levelSelectPanel.classList.add('show');
+}
 
-                for (let i = 0; i < 7; i++) {
-                    const hole = document.createElement('div');
-                    hole.classList.add('hole', 'front');
-                    if (data.F[i] === '1')      hole.classList.add('closed');
-                    else if (data.F[i] === 'H') hole.classList.add('half');
-                    visualEl.appendChild(hole);
-                }
+function hideLevelSelect(){
+  levelSelectPanel.classList.remove('show');
+}
 
-                noteEl.appendChild(visualEl);
-                diagramContainer.appendChild(noteEl);
+function startTraining(level){
+  hideLevelSelect();
+  roundResultPanel.classList.remove('show');
+  training.level=level;
+  training.correctCount=0;
+  training.wrongCount=0;
+  training.queue=[];
+  training.roundCount=0;
+  appMode='training';
+  modeFreeBtn.classList.remove('active');
+  modeTrainBtn.classList.add('active');
+  scoreboardRow.style.display='flex';
+  trainingPanel.classList.add('active');
+  diagramContainer.classList.add('hide-labels');
+  toggleLabelsBtn.style.display='none';
+  updateScoreboard();
+  nextTrainingQuestion();
+}
 
-                noteEl.addEventListener('pointerdown', async (e) => {
-                    e.preventDefault();
-                    await playSound(playbackNote, noteEl);
-                });
-                noteEl.addEventListener('pointerup',     (e) => { e.preventDefault(); stopSound(noteEl); });
-                noteEl.addEventListener('pointerleave',  ()  => stopSound(noteEl));
-                noteEl.addEventListener('pointercancel', ()  => stopSound(noteEl));
-            });
-        }
+function stopTraining(){
+  clearTrainingTimer();
+  stopAllSounds();
+  appMode='free';
+  training.active=false;
+  modeFreeBtn.classList.add('active');
+  modeTrainBtn.classList.remove('active');
+  scoreboardRow.style.display='none';
+  trainingPanel.classList.remove('active');
+  toggleLabelsBtn.style.display='';
+  if(labelsVisible) diagramContainer.classList.remove('hide-labels');
+  roundResultPanel.classList.remove('show');
+  statusEl.textContent=instrument?'áudio pronto':'toque para ouvir';
+}
 
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) stopAllSounds();
-        });
+function updateScoreboard(){
+  scoreCorrectEl.textContent=training.correctCount;
+  scoreWrongEl.textContent=training.wrongCount;
+  scoreLevelLabel.textContent=`Nível ${training.level.id}`;
+}
 
-        instrumentSelect.addEventListener('change', (e) => renderFlute(e.target.value));
+function nextTrainingQuestion(){
+  clearTrainingTimer();
+  document.querySelectorAll('.note-diagram.correct-answer,.note-diagram.wrong-answer,.note-diagram.active')
+    .forEach(el=>el.classList.remove('correct-answer','wrong-answer','active'));
 
-        reverbFader.addEventListener('input', (e) => {
-            if (reverbGain) reverbGain.gain.value = parseFloat(e.target.value);
-        });
+  if(training.queue.length===0){
+    training.queue = [...training.level.indices].sort(() => Math.random() - 0.5).slice(0, ROUND_SIZE);
+    training.roundCount=0;
+  }
 
-        let labelsVisible = true;
-        toggleLabelsBtn.addEventListener('click', () => {
-            labelsVisible = !labelsVisible;
-            diagramContainer.classList.toggle('hide-labels', !labelsVisible);
-            toggleLabelsBtn.textContent = labelsVisible ? 'Ocultar Notas' : 'Mostrar Notas';
-        });
+  if(training.roundCount>=ROUND_SIZE){
+    showRoundResult();
+    return;
+  }
 
-        renderFlute('soprano');
-    </script>
+  const idx=training.queue[training.roundCount];
+  training.currentIdx=idx;
+  training.answered=false;
+  training.roundCount++;
+
+  const info=getNoteInfo(currentInstrument,idx);
+  trainingNoteDisp.textContent=info.labelBr;
+  trainingNoteDisp.style.animation='none';
+  void trainingNoteDisp.offsetWidth;
+  trainingNoteDisp.style.animation='';
+
+  playNote(info.playbackNote, null, false);
+  startTimer(training.level.time);
+}
+
+function startTimer(seconds){
+  timerBarEl.style.transition='none';
+  timerBarEl.style.width='100%';
+  timerBarEl.classList.remove('urgent');
+  void timerBarEl.offsetWidth;
+  training.timerStart=Date.now();
+  const totalMs=seconds*1000;
+
+  function tick(){
+    const elapsed=Date.now()-training.timerStart;
+    const pct=Math.max(0,1-elapsed/totalMs);
+    timerBarEl.style.width=(pct*100)+'%';
+    if(pct<0.35) timerBarEl.classList.add('urgent');
+    if(pct<=0){
+      handleTimeout();
+      return;
+    }
+    if(!training.answered) training.timerBarHandle=requestAnimationFrame(tick);
+  }
+  training.timerBarHandle=requestAnimationFrame(tick);
+}
+
+function clearTrainingTimer(){
+  if(training.timerHandle) clearTimeout(training.timerHandle);
+  if(training.timerBarHandle) cancelAnimationFrame(training.timerBarHandle);
+}
+
+function handleTimeout(){
+  if(training.answered) return;
+  training.answered=true;
+  training.wrongCount++;
+  updateScoreboard();
+  
+  // Som de erro por tempo
+  if(sndWrong) sndWrong.play('C2'); 
+  
+  showFeedback(false,'Tempo!');
+  const correctEl=document.querySelector(`.note-diagram[data-index="${training.currentIdx}"]`);
+  if(correctEl){
+    correctEl.classList.add('correct-answer');
+    setTimeout(()=>correctEl.classList.remove('correct-answer'),700);
+  }
+  setTimeout(()=>nextTrainingQuestion(),1400);
+}
+
+async function handleTrainingTap(noteEl, tappedIndex){
+  if(training.answered) return;
+  training.answered=true;
+  clearTrainingTimer();
+  timerBarEl.style.width='0%';
+
+  const correct=(tappedIndex===training.currentIdx);
+  if(correct){
+    training.correctCount++;
+    noteEl.classList.add('correct-answer');
+    // SOM DE ACERTO (Xylophone - nota alta)
+    if(sndCorrect) sndCorrect.play('C6', ac.currentTime, {gain:0.6});
+    
+    setTimeout(()=>noteEl.classList.remove('correct-answer'),700);
+  } else {
+    training.wrongCount++;
+    noteEl.classList.add('wrong-answer');
+    // SOM DE ERRO (Timpani - nota baixa)
+    if(sndWrong) sndWrong.play('C2', ac.currentTime, {gain:0.8});
+    
+    const correctEl=document.querySelector(`.note-diagram[data-index="${training.currentIdx}"]`);
+    if(correctEl){
+      correctEl.classList.add('correct-answer');
+      setTimeout(()=>correctEl.classList.remove('correct-answer'),900);
+    }
+    const info=getNoteInfo(currentInstrument,training.currentIdx);
+    await playNote(info.playbackNote,null,false);
+    setTimeout(()=>noteEl.classList.remove('wrong-answer'),900);
+  }
+  updateScoreboard();
+  showFeedback(correct, correct ? '✓ Certo!' : '✗ Errou!');
+  setTimeout(()=>nextTrainingQuestion(), correct?900:1400);
+}
+
+function showFeedback(correct, text){
+  feedbackToast.textContent=text;
+  feedbackToast.className='feedback-toast';
+  void feedbackToast.offsetWidth;
+  feedbackToast.classList.add(correct?'show-correct':'show-wrong');
+}
+
+function showRoundResult(){
+  const totalAnswered=training.correctCount+training.wrongCount;
+  const pct=totalAnswered>0?Math.round((training.correctCount/totalAnswered)*100):0;
+  resCorrect.textContent=training.correctCount;
+  resWrong.textContent=training.wrongCount;
+  resPct.textContent=pct+'%';
+  
+  if(pct===100) resultTitle.textContent='Perfeito! 🎉';
+  else if(pct>=80) resultTitle.textContent='Muito bem!';
+  else resultTitle.textContent='Continue praticando!';
+
+  const nextLv=LEVELS.find(l=>l.id===training.level.id+1);
+  resNextBtn.style.display=nextLv?'':'none';
+  roundResultPanel.classList.add('show');
+}
+
+// ═══════════════════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════════════════
+modeFreeBtn.addEventListener('click',()=>{
+  if(appMode==='training') stopTraining();
+  modeFreeBtn.classList.add('active');
+  modeTrainBtn.classList.remove('active');
+});
+
+modeTrainBtn.addEventListener('click', showLevelSelect);
+changeLevelBtn.addEventListener('click',showLevelSelect);
+stopTrainingBtn.addEventListener('click',stopTraining);
+levelCloseBtn.addEventListener('click',hideLevelSelect);
+
+instrumentSelect.addEventListener('change',(e)=>{
+  currentInstrument=e.target.value;
+  renderFlute(currentInstrument);
+  if(appMode==='training') nextTrainingQuestion();
+});
+
+reverbFader.addEventListener('input',(e)=>{
+  if(reverbGain) reverbGain.gain.value=parseFloat(e.target.value);
+});
+
+toggleLabelsBtn.addEventListener('click',()=>{
+  labelsVisible=!labelsVisible;
+  diagramContainer.classList.toggle('hide-labels',!labelsVisible);
+  toggleLabelsBtn.textContent=labelsVisible?'Ocultar Notas':'Mostrar Notas';
+});
+
+resRetryBtn.addEventListener('click',()=>{
+  roundResultPanel.classList.remove('show');
+  startTraining(training.level);
+});
+
+resNextBtn.addEventListener('click',()=>{
+  const nextLv=LEVELS.find(l=>l.id===training.level.id+1);
+  if(nextLv) startTraining(nextLv);
+});
+
+resFreeBtn.addEventListener('click', stopTraining);
+
+// INIT
+currentInstrument='soprano';
+renderFlute(currentInstrument);
+</script>
 </body>
 </html>
